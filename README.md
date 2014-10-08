@@ -1,10 +1,10 @@
-# Archon WebAPI Framework
+# Archon Web API Framework
 
 > Extension & helper methods that make working with [Asp.Net Web API](http://www.asp.net/web-api) easier.
 
 ## How to Use
 
-Install via nuget
+Install via [nuget](https://www.nuget.org/packages/Archon.WebApi/)
 
 ```
 install-package Archon.WebApi
