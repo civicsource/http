@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Formatting;
 
 namespace Archon.WebApi
 {
@@ -19,6 +20,12 @@ namespace Archon.WebApi
 		static string BuildNotFoundMessage(string name, string identifier)
 		{
 			return String.Format("Could not find {0} with identifier '{1}'.", name.ToLower(), identifier);
+		}
+
+		public static HttpRequestMessage WithJsonContent<T>(this HttpRequestMessage request, T content)
+		{
+			request.Content = new ObjectContent<T>(content, new JsonMediaTypeFormatter());
+			return request;
 		}
 	}
 }
