@@ -4,13 +4,33 @@ using System.Threading.Tasks;
 
 namespace Archon.WebApi
 {
-	public interface Link
+	public abstract class Link
 	{
-		HttpRequestMessage CreateRequest();
+		public RequestAuthentication Authorization { get; set; }
+
+		public HttpRequestMessage CreateRequest()
+		{
+			var req = CreateRequestInternal();
+
+			if (Authorization != null)
+				req.Headers.Authorization = Authorization.AsHeader();
+
+			return req;
+		}
+
+		protected abstract HttpRequestMessage CreateRequestInternal();
 	}
 
-	public interface Link<TResponse> : Link
+	public abstract class Link<TResponse> : Link
 	{
-		Task<TResponse> ParseResponse(HttpResponseMessage response);
+		public Task<TResponse> ParseResponse(HttpResponseMessage response)
+		{
+			if (response == null)
+				throw new ArgumentNullException("response");
+
+			return ParseResponseInternal(response);
+		}
+
+		protected abstract Task<TResponse> ParseResponseInternal(HttpResponseMessage response);
 	}
 }
