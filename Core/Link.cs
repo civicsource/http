@@ -6,7 +6,7 @@ namespace Archon.WebApi
 {
 	public abstract class Link
 	{
-		public RequestAuthentication Authorization { get; set; }
+		public Authorization Authorization { get; set; }
 
 		public HttpRequestMessage CreateRequest()
 		{

@@ -5,27 +5,27 @@ using System.Text;
 
 namespace Archon.WebApi
 {
-	public class RequestAuthentication
+	public class Authorization
 	{
 		public string Token { get; private set; }
 
 		public string Username { get; private set; }
 		public string Password { get; private set; }
 
-		private RequestAuthentication() { }
+		private Authorization() { }
 
-		public static RequestAuthentication Bearer(string token)
+		public static Authorization Bearer(string token)
 		{
 			if (String.IsNullOrWhiteSpace(token))
 				throw new ArgumentNullException("token");
 
-			return new RequestAuthentication
+			return new Authorization
 			{
 				Token = token
 			};
 		}
 
-		public static RequestAuthentication Basic(string username, string password)
+		public static Authorization Basic(string username, string password)
 		{
 			if (String.IsNullOrWhiteSpace(username))
 				throw new ArgumentNullException("username");
@@ -33,20 +33,20 @@ namespace Archon.WebApi
 			if (String.IsNullOrWhiteSpace(password))
 				throw new ArgumentNullException("password");
 
-			return new RequestAuthentication
+			return new Authorization
 			{
 				Username = username,
 				Password = password
 			};
 		}
 
-		public static RequestAuthentication Parse(AuthenticationHeaderValue header)
+		public static Authorization Parse(AuthenticationHeaderValue header)
 		{
 			if (header == null)
 				return null;
 
 			if (header.Scheme == "Bearer")
-				return RequestAuthentication.Bearer(header.Parameter);
+				return Authorization.Bearer(header.Parameter);
 
 			if (header.Scheme == "Basic")
 			{
@@ -64,7 +64,7 @@ namespace Archon.WebApi
 				if (String.IsNullOrWhiteSpace(username) || String.IsNullOrWhiteSpace(password))
 					return null;
 
-				return RequestAuthentication.Basic(username, password);
+				return Authorization.Basic(username, password);
 			}
 
 			return null;
