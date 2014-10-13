@@ -13,9 +13,12 @@ namespace Archon.WebApi
 		{
 			var req = CreateRequestInternal();
 
-			var authToken = GetAuthToken();
-			if (authToken != null)
-				req.Headers.Authorization = authToken.AsHeader();
+			if (req.Headers.Authorization == null)
+			{
+				var authToken = GetAuthToken();
+				if (authToken != null)
+					req.Headers.Authorization = authToken.AsHeader();
+			}
 
 			return req;
 		}
