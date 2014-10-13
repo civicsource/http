@@ -23,7 +23,7 @@ namespace Archon.WebApi
 
 	public abstract class Link<TResponse> : Link
 	{
-		public Task<TResponse> ParseResponse(HttpResponseMessage response)
+		public Task<TResponse> ParseResponseAsync(HttpResponseMessage response)
 		{
 			if (response == null)
 				throw new ArgumentNullException("response");

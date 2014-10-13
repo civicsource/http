@@ -23,7 +23,7 @@ namespace Archon.WebApi
 		public static async Task<TResponse> SendAsync<TResponse>(this HttpClient client, Link<TResponse> link)
 		{
 			var response = await client.SendAsync((Link)link);
-			return await link.ParseResponse(response);
+			return await link.ParseResponseAsync(response);
 		}
 
 		public static TResponse Send<TResponse>(this HttpClient client, Link<TResponse> link)
