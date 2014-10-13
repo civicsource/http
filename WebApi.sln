@@ -14,6 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{9DF40530
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{E695757E-A41A-47F2-B106-8A9E0F5C688D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logging", "Logging\Logging.csproj", "{4227BC02-C331-41EB-A942-BC1703AD0E07}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -34,6 +36,16 @@ Global
 		{E695757E-A41A-47F2-B106-8A9E0F5C688D}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{E695757E-A41A-47F2-B106-8A9E0F5C688D}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{E695757E-A41A-47F2-B106-8A9E0F5C688D}.Release|x86.ActiveCfg = Release|Any CPU
+		{4227BC02-C331-41EB-A942-BC1703AD0E07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4227BC02-C331-41EB-A942-BC1703AD0E07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4227BC02-C331-41EB-A942-BC1703AD0E07}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{4227BC02-C331-41EB-A942-BC1703AD0E07}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{4227BC02-C331-41EB-A942-BC1703AD0E07}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4227BC02-C331-41EB-A942-BC1703AD0E07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4227BC02-C331-41EB-A942-BC1703AD0E07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4227BC02-C331-41EB-A942-BC1703AD0E07}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{4227BC02-C331-41EB-A942-BC1703AD0E07}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{4227BC02-C331-41EB-A942-BC1703AD0E07}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

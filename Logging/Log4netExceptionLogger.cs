@@ -2,7 +2,7 @@
 using System.Web.Http.ExceptionHandling;
 using log4net;
 
-namespace Archon.WebApi
+namespace Archon.WebApi.Logging
 {
 	public class Log4netExceptionLogger : ExceptionLogger
 	{
