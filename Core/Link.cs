@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Archon.WebApi
@@ -12,10 +13,23 @@ namespace Archon.WebApi
 		{
 			var req = CreateRequestInternal();
 
-			if (Authorization != null)
-				req.Headers.Authorization = Authorization.AsHeader();
+			var authToken = GetAuthToken();
+			if (authToken != null)
+				req.Headers.Authorization = authToken.AsHeader();
 
 			return req;
+		}
+
+		Authorization GetAuthToken()
+		{
+			if (Authorization != null)
+				return Authorization;
+
+			var token = Thread.CurrentPrincipal as AuthToken;
+			if (token != null)
+				return Authorization.Bearer(token.Token);
+
+			return null;
 		}
 
 		protected abstract HttpRequestMessage CreateRequestInternal();
