@@ -10,11 +10,61 @@ Install via [nuget](https://www.nuget.org/packages/Archon.WebApi/)
 install-package Archon.WebApi
 ```
 
-Make sure to add `using Archon.WebApi;` to the top of your files to get access to any of the following extension methods:
+Make sure to add `using Archon.WebApi;` to the top of your files to get access to any of the following extension methods.
 
-### HttpResponseMessage.EnsureSuccess
+* [The Link Class](#the-link-class)
+* [A Better Ensure Success](#a-better-ensure-success)
+* [Authorization Class](#authorization)
+* [Trailing Slash Attributes](#trailing-slash-attributes)
+* [Validate Models with Style](#validate-models-with-style)
+* [Convert Domain Exceptions to HTTP Responses](#convert-domain-exceptions-to-http-responses)
+* [Rewrite Authorization Tokens in URL to HTTP Header](#rewrite-authorization-tokens-in-url-to-http-header)
+* [Test Against External HTTP APIs](#test-against-external-http-apis)
+* [Log API Exceptions via log4net](#log-api-exceptions-via-log4net)
 
-The existing `EnsureSuccessStatusCode` is pretty terrible when it comes to throwing a useful exception message. It does not provide any way to access the content of the response after the exception is thrown when usually, the response content has the most usuful information as to why the request failed.
+### The Link Class
+
+The `Link` class should be used to create .net HTTP API clients. It is inspired by the book _[Designing Evolvable Web APIs with ASP.NET](http://chimera.labs.oreilly.com/books/1234000001708)_. It implements a link relation. Specifically:
+
+> In the web world, media types are used to convey what a resource represents, and a link relation suggests why you should care about that resource.
+
+If you were building an API client for the [Github API](https://developer.github.com/v3/), rather than providing something like this:
+
+```cs
+var github = new GithubClient("my-api-key");
+var repos = github.GetRepositories("username");
+```
+
+The `Link` class allows you to provide an interface more akin to this:
+
+```cs
+var client = new HttpClient();
+var repos = await client.SendAsync(new GetGithubRepositories("username"));
+```
+
+This uses the native `HttpClient` to do what it is good at, sending HTTP requests while at the same time providing a nice porcelain wrapper around the HTTP particulars. However, if you want to be closer to the metal, the `Link` class doesn't try to leakily abstract away the fact that you are making an HTTP request. You can also do something like this:
+
+```cs
+var client = new HttpClient();
+var link = new GetGithubRepositories("username");
+
+HttpResponseMessage response = await api.SendAsync(link.CreateRequest());
+
+if (response.StatusCode == HttpStatusCode.Redirect)
+{
+  //do something cool
+}
+
+var repos = await link.ParseResponseAsync(response);
+```
+
+Internally, the `HttpClient.SendAsync(Link)` method is calling `CreateRequest` and `ParseResponseAsync` for your convenience.
+
+Read [Chapter 9: Building the Client](http://chimera.labs.oreilly.com/books/1234000001708/ch09.html) for free online for more information on the advantages of building client libraries like this.
+
+### A Better Ensure Success
+
+The existing `EnsureSuccessStatusCode` is pretty terrible when it comes to throwing a useful exception message. It does not provide any way to access the content of the response after the exception is thrown when usually, the response content has the most useful information as to why the request failed.
 
 This new extension method, `EnsureSuccess`, will return the response content along with the status code and request URL/method in the exception message making your logs much more useful when making use of HTTP APIs.
 
@@ -26,4 +76,127 @@ await response.EnsureSuccess();
 //if the response failed, it will throw an exception that looks something like this:
 //Received HTTP 409 (Conflict) while POSTing URL 'http://example.com/api/thing/'.
 //{"Message":"These are not the droids you are looking for."}
+```
+
+### Authorization
+
+The `Authorization` class abstracts away parsing an authorization HTTP header. It supports `Bearer` and `Basic` authorization schemes.
+
+```cs
+var auth = Authorization.Basic("username", "password");
+request.Headers.Authorization = auth.AsHeader();
+//base64 encodes the username:password and creates a new AuthenticationHeaderValue
+```
+
+```cs
+var auth = Authorization.Bearer("my-opaque-auth-token");
+request.Headers.Authorization = auth.AsHeader();
+//creates a new AuthenticationHeaderValue with the token value
+```
+
+### Trailing Slash Attributes
+
+[Trailing slashes (or the lack thereof) on URIs are important](http://cdivilly.wordpress.com/2014/03/11/why-trailing-slashes-on-uris-are-important/). The `EnsureTrailingSlashAttribute` is an action filter attribute that will ensure the request URI used to access an action method has a trailing slash. If it doesn't, it issues a permanent redirect to the correct URL. Its sibling, `EnsureNoTrailingSlashAttribute`, does the opposite.
+
+### Validate Models with Style
+
+The `ValidateModelAttribute` is an action filter attribute that will ensure your model state is valid. If it is not, it immediately returns an `HTTP 400 (Bad Request)` with the reason the model did not pass validation.
+
+Use the attributes from the `System.ComponentModel.DataAnnotations` namespace to decorate your models:
+
+```cs
+public class Authentication
+{
+	[Required]
+	public string Username { get; set; }
+
+	[Required]
+	public string Password { get; set; }
+}
+```
+
+Configure it globally for all API controllers:
+
+```cs
+//config is the global HttpConfiguration
+config.Filters.Add(new ValidateModelAttribute());
+```
+
+### Convert Domain Exceptions to HTTP Responses
+
+The `DomainExceptionFilterAttribute` is an action filter attribute that will convert common domain model exceptions to proper HTTP response codes. E.g., if your domain model constructor already throws an `ArgumentNullException` when creating a new entity to be saved, the `DomainExceptionFilterAttribute` converts that exception to an `HTTP 400 (Bad Request)` with the exception message as the response content.
+
+It currently converts anything that inherits from `ArgumentException` to an `HTTP 400` and `InvalidOperationException` to `HTTP 409`.
+
+Configure it globally for all API controllers:
+
+```cs
+//config is the global HttpConfiguration
+config.Filters.Add(new DomainExceptionFilterAttribute());
+```
+
+### Rewrite Authorization Tokens in URL to HTTP Header
+
+If only there was a way to set arbitrary HTTP headers for an `a` tag. You want to create a link to download a CSV file but the API endpoint the link is pointing to requires authentication. Using the `AuthHeaderManipulator`, you can just include the authorization header as a querystring for the link and it will be rewritten to a proper HTTP Authorization header.
+
+```html
+<a href="/api/stuff.csv?auth=my-auth-token"></a>
+```
+
+```cs
+//config is the global HttpConfiguration
+config.MessageHandlers.Add(new AuthHeaderManipulator());
+```
+
+### Test Against External HTTP APIs
+
+When you are testing some code that calls out to an external HTTP service using the `HttpClient`, you will want to isolate and mock out the external HTTP request. You can use the `FakeHttpHandler` to do that for you.
+
+First, set the fake handler up:
+
+```cs
+//create your fake handler
+var fake = new FakeHttpHandler();
+
+//configure the HttpClient
+var client = new HttpClient(fake);
+
+//register the fake HttpClient in your dependency container of choice
+```
+
+Your code under test:
+
+```cs
+var response = await client.PostAsJsonAsync("/api/stuff/", new
+{
+	name = "Homer Simpson",
+	location = "Springfield"
+});
+```
+
+Your test code:
+
+```cs
+fake.Action = (req, c) =>
+{
+	dynamic payload = req.Content.ReadAsAsync<ExpandoObject>().Result;
+	//do some asserts on the payload
+
+	//mock out the response you want to send
+	return Task.FromResult(req.CreateResponse(HttpStatusCode.BadRequest, new
+	{
+		message = "These aren't the droids you are looking for."
+	}));
+};
+```
+
+If you don't specify any `Action`, the `FakeHttpHandler` will return an `HTTP 200 (OK)`.
+
+### Log API Exceptions via [log4net](http://logging.apache.org/log4net/)
+
+If you use `log4net` for all of your logging needs, you will want to log unhandled exceptions in your WebAPI project. Register the `Log4netExceptionLogger` (available in the `Archon.WebApi.Logging` package) to do just that.
+
+```cs
+//config is the global HttpConfiguration
+config.Services.Add(typeof(IExceptionLogger), new Log4netExceptionLogger());
 ```
