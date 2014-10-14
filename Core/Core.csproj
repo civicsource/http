@@ -60,6 +60,7 @@
     <Compile Include="DomainExceptionFilterAttribute.cs" />
     <Compile Include="EnsureNoTrailingSlashAttribute.cs" />
     <Compile Include="EnsureTrailingSlashAttribute.cs" />
+    <Compile Include="FakeHttpHandler.cs" />
     <Compile Include="HttpPatchClientSupport.cs" />
     <Compile Include="Link.cs" />
     <Compile Include="HttpClientExtensions.cs" />
