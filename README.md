@@ -194,7 +194,7 @@ If you don't specify any `Action`, the `FakeHttpHandler` will return an `HTTP 20
 
 ### Log API Exceptions via [log4net](http://logging.apache.org/log4net/)
 
-If you use `log4net` for all of your logging needs, you will want to log unhandled exceptions in your WebAPI project. Register the `Log4netExceptionLogger` (available in the `Archon.WebApi.Logging` package) to do just that.
+If you use `log4net` for all of your logging needs, you will want to log unhandled exceptions in your WebAPI project. Register the `Log4netExceptionLogger` (available in the [`Archon.WebApi.Logging`](https://www.nuget.org/packages/Archon.WebApi.Logging/) package) to do just that.
 
 ```cs
 //config is the global HttpConfiguration
