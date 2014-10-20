@@ -12,7 +12,7 @@ install-package Archon.WebApi
 
 Make sure to add `using Archon.WebApi;` to the top of your files to get access to any of the following extension methods.
 
-* [The Link Class](#the-link-class)
+* [The Link Concept](#the-link-concept)
 * [A Better Ensure Success](#a-better-ensure-success)
 * [Authorization Class](#authorization)
 * [Trailing Slash Attributes](#trailing-slash-attributes)
@@ -22,9 +22,9 @@ Make sure to add `using Archon.WebApi;` to the top of your files to get access t
 * [Test Against External HTTP APIs](#test-against-external-http-apis)
 * [Log API Exceptions via log4net](#log-api-exceptions-via-log4net)
 
-### The Link Class
+### The Link Concept
 
-The `Link` class should be used to create .net HTTP API clients. It is inspired by the book _[Designing Evolvable Web APIs with ASP.NET](http://chimera.labs.oreilly.com/books/1234000001708)_. It implements a link relation. Specifically:
+The `Link` interface should be used to create .net HTTP API clients. It is inspired by the book _[Designing Evolvable Web APIs with ASP.NET](http://chimera.labs.oreilly.com/books/1234000001708)_. It implements a link relation. Specifically:
 
 > In the web world, media types are used to convey what a resource represents, and a link relation suggests why you should care about that resource.
 
@@ -35,14 +35,14 @@ var github = new GithubClient("my-api-key");
 var repos = github.GetRepositories("username");
 ```
 
-The `Link` class allows you to provide an interface more akin to this:
+`Link` allows you to provide an interface more akin to this:
 
 ```cs
 var client = new HttpClient();
 var repos = await client.SendAsync(new GetGithubRepositories("username"));
 ```
 
-This uses the native `HttpClient` to do what it is good at, sending HTTP requests while at the same time providing a nice porcelain wrapper around the HTTP particulars. However, if you want to be closer to the metal, the `Link` class doesn't try to leakily abstract away the fact that you are making an HTTP request. You can also do something like this:
+This uses the native `HttpClient` to do what it is good at, sending HTTP requests while at the same time providing a nice porcelain wrapper around the HTTP particulars. However, if you want to be closer to the metal, `Link` doesn't try to leakily abstract away the fact that you are making an HTTP request. You can also do something like this:
 
 ```cs
 var client = new HttpClient();
@@ -59,6 +59,42 @@ var repos = await link.ParseResponseAsync(response);
 ```
 
 Internally, the `HttpClient.SendAsync(Link)` method is calling `CreateRequest` and `ParseResponseAsync` for your convenience.
+
+A sample implementation of `GetGithubRepositories` could look something like this:
+
+```cs
+public class GetGithubRepositories : Link<IEnumerable<Repo>>
+{
+	public string Username { get; private set; }
+
+	public GetGithubRepositories(string username)
+	{
+		this.Username = username;
+	}
+
+	public HttpRequestMessage CreateRequest()
+	{
+		//the client being used to send this request should have a BaseAddress configured
+		//this allows us to use relative URLs when building our HttpRequestMessage
+		return new HttpRequestMessage(HttpMethod.Get, String.Format("repositories/{0}", Username));
+	}
+
+	public async Task<IEnumerable<Repo>> ParseResponseAsync(HttpResponseMessage response)
+	{
+		if (response == null)
+			throw new ArgumentNullException("response");
+
+		if (response.StatusCode == HttpStatusCode.NotFound)
+			return null; //return a null object if we get a not-found response
+
+		//see below for this method
+		await response.EnsureSuccess(); //throw an error on any other non-200 response
+
+		//parse the response body into our object we want to return
+		return await response.Content.ReadAsAsync<IEnumerable<Repo>>();
+	}
+}
+```
 
 Read [Chapter 9: Building the Client](http://chimera.labs.oreilly.com/books/1234000001708/ch09.html) for free online for more information on the advantages of building client libraries like this.
 
