@@ -25,4 +25,12 @@
 		<TeamCitySetBuildNumber BuildNumber="$(semver)" />
 		<MSBuild Projects="@(solutions)" Properties="$(buildOptions)" />
 	</Target>
+
+	<Target Name="Test" DependsOnTargets="Build">
+		<ItemGroup>
+			<testProjects Include="Tests\Tests.csproj" />
+		</ItemGroup>
+
+		<MSBuild Projects="@(testProjects)" Targets="Test" Properties="$(buildOptions)" />
+	</Target>
 </Project>
