@@ -62,7 +62,7 @@
     <Compile Include="AuthorizationTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\AssemblyVersion.cs" />
-    <Compile Include="Setup.cs" />
+    <Compile Include="ContextUtil.cs" />
     <Compile Include="NoTrailingSlashAttributeTests.cs" />
     <Compile Include="TrailingSlashAttributeTests.cs" />
   </ItemGroup>

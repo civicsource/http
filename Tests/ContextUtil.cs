@@ -10,7 +10,7 @@ namespace Archon.WebApi.Tests
 	/// <remarks>
 	/// http://aspnetwebstack.codeplex.com/SourceControl/latest#test/System.Web.Http.Test/Util/ContextUtil.cs
 	/// </remarks>
-	static class Setup
+	static class ContextUtil
 	{
 		public static HttpControllerContext CreateControllerContext(HttpConfiguration configuration = null, IHttpController instance = null, IHttpRouteData routeData = null, HttpRequestMessage request = null)
 		{

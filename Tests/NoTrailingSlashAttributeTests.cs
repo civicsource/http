@@ -16,7 +16,7 @@ namespace Archon.WebApi.Tests
 
 		HttpActionContext SetupContext(string uri)
 		{
-			return Setup.CreateActionContext(controllerContext: Setup.CreateControllerContext(request: new HttpRequestMessage(HttpMethod.Get, uri)));
+			return ContextUtil.CreateActionContext(controllerContext: ContextUtil.CreateControllerContext(request: new HttpRequestMessage(HttpMethod.Get, uri)));
 		}
 
 		[Fact]
