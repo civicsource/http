@@ -12,9 +12,13 @@ namespace Archon.WebApi
 			var user = actionContext.ControllerContext.RequestContext.Principal;
 
 			if (user == null || !user.Identity.IsAuthenticated)
+			{
 				actionContext.Response = actionContext.Request.CreateErrorResponse(HttpStatusCode.Unauthorized, "Please authenticate to access this resource.");
-
-			actionContext.Response = actionContext.Request.CreateErrorResponse(HttpStatusCode.Forbidden, "User does not have appropriate permissions to access this resource.");
+			}
+			else
+			{
+				actionContext.Response = actionContext.Request.CreateErrorResponse(HttpStatusCode.Forbidden, "User does not have appropriate permissions to access this resource.");
+			}
 		}
 	}
 }
