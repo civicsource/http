@@ -15,6 +15,7 @@ Make sure to add `using Archon.WebApi;` to the top of your files to get access t
 * [The Link Concept](#the-link-concept)
 * [A Better Ensure Success](#a-better-ensure-success)
 * [Authorization Class](#authorization)
+* [Authorize Correctly](#authorize-correctly)
 * [Trailing Slash Attributes](#trailing-slash-attributes)
 * [Validate Models with Style](#validate-models-with-style)
 * [Convert Domain Exceptions to HTTP Responses](#convert-domain-exceptions-to-http-responses)
@@ -129,6 +130,12 @@ var auth = Authorization.Bearer("my-opaque-auth-token");
 request.Headers.Authorization = auth.AsHeader();
 //creates a new AuthenticationHeaderValue with the token value
 ```
+
+### Authorize Correctly
+
+The `401 Unauthorized` response should be reserved for requests that are not authenticated. The `403 Forbidden` response should be used for requests that are correctly authenticated, but do not have access to a particular resource. [See here for a discussion](http://stackoverflow.com/questions/3297048/403-forbidden-vs-401-unauthorized-http-responses) on this.
+
+Unfortunately, the built-in `System.Web.Http.AuthorizeAttribute` always returns a `401` no matter the nuances of the situation. The `AuthorizeCorrectly` attribute behaves like it should.
 
 ### Trailing Slash Attributes
 
