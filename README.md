@@ -31,21 +31,21 @@ The `Link` interface should be used to create .net HTTP API clients. It is inspi
 
 If you were building an API client for the [Github API](https://developer.github.com/v3/), rather than providing something like this:
 
-```cs
+```c#
 var github = new GithubClient("my-api-key");
 var repos = github.GetRepositories("username");
 ```
 
 `Link` allows you to provide an interface more akin to this:
 
-```cs
+```c#
 var client = new HttpClient();
 var repos = await client.SendAsync(new GetGithubRepositories("username"));
 ```
 
 This uses the native `HttpClient` to do what it is good at, sending HTTP requests while at the same time providing a nice porcelain wrapper around the HTTP particulars. However, if you want to be closer to the metal, `Link` doesn't try to leakily abstract away the fact that you are making an HTTP request. You can also do something like this:
 
-```cs
+```c#
 var client = new HttpClient();
 var link = new GetGithubRepositories("username");
 
@@ -63,7 +63,7 @@ Internally, the `HttpClient.SendAsync(Link)` method is calling `CreateRequest` a
 
 A sample implementation of `GetGithubRepositories` could look something like this:
 
-```cs
+```c#
 public class GetGithubRepositories : Link<IEnumerable<Repo>>
 {
 	public string Username { get; private set; }
@@ -105,7 +105,7 @@ The existing `EnsureSuccessStatusCode` is pretty terrible when it comes to throw
 
 This new extension method, `EnsureSuccess`, will return the response content along with the status code and request URL/method in the exception message making your logs much more useful when making use of HTTP APIs.
 
-```cs
+```c#
 //client is an HttpClient and request is an HttpRequestMessage
 HttpResponseMessage response = await client.SendAsync(request);
 await response.EnsureSuccess();
@@ -119,13 +119,13 @@ await response.EnsureSuccess();
 
 The `Authorization` class abstracts away parsing an authorization HTTP header. It supports `Bearer` and `Basic` authorization schemes.
 
-```cs
+```c#
 var auth = Authorization.Basic("username", "password");
 request.Headers.Authorization = auth.AsHeader();
 //base64 encodes the username:password and creates a new AuthenticationHeaderValue
 ```
 
-```cs
+```c#
 var auth = Authorization.Bearer("my-opaque-auth-token");
 request.Headers.Authorization = auth.AsHeader();
 //creates a new AuthenticationHeaderValue with the token value
@@ -147,7 +147,7 @@ The `ValidateModelAttribute` is an action filter attribute that will ensure your
 
 Use the attributes from the `System.ComponentModel.DataAnnotations` namespace to decorate your models:
 
-```cs
+```c#
 public class Authentication
 {
 	[Required]
@@ -160,7 +160,7 @@ public class Authentication
 
 Configure it globally for all API controllers:
 
-```cs
+```c#
 //config is the global HttpConfiguration
 config.Filters.Add(new ValidateModelAttribute());
 ```
@@ -173,7 +173,7 @@ It currently converts anything that inherits from `ArgumentException` to an `HTT
 
 Configure it globally for all API controllers:
 
-```cs
+```c#
 //config is the global HttpConfiguration
 config.Filters.Add(new DomainExceptionFilterAttribute());
 ```
@@ -186,7 +186,7 @@ If only there was a way to set arbitrary HTTP headers for an `a` tag. You want t
 <a href="/api/stuff.csv?auth=my-auth-token"></a>
 ```
 
-```cs
+```c#
 //config is the global HttpConfiguration
 config.MessageHandlers.Add(new AuthHeaderManipulator());
 ```
@@ -197,7 +197,7 @@ When you are testing some code that calls out to an external HTTP service using 
 
 First, set the fake handler up:
 
-```cs
+```c#
 //create your fake handler
 var fake = new FakeHttpHandler();
 
@@ -209,7 +209,7 @@ var client = new HttpClient(fake);
 
 Your code under test:
 
-```cs
+```c#
 var response = await client.PostAsJsonAsync("/api/stuff/", new
 {
 	name = "Homer Simpson",
@@ -219,7 +219,7 @@ var response = await client.PostAsJsonAsync("/api/stuff/", new
 
 Your test code:
 
-```cs
+```c#
 fake.Action = (req, c) =>
 {
 	dynamic payload = req.Content.ReadAsAsync<ExpandoObject>().Result;
@@ -239,7 +239,7 @@ If you don't specify any `Action`, the `FakeHttpHandler` will return an `HTTP 20
 
 If you use `log4net` for all of your logging needs, you will want to log unhandled exceptions in your WebAPI project. Register the `Log4netExceptionLogger` (available in the [`Archon.WebApi.Logging`](https://www.nuget.org/packages/Archon.WebApi.Logging/) package) to do just that.
 
-```cs
+```c#
 //config is the global HttpConfiguration
 config.Services.Add(typeof(IExceptionLogger), new Log4netExceptionLogger());
 ```
