@@ -20,6 +20,7 @@ Make sure to add `using Archon.WebApi;` to the top of your files to get access t
 * [Validate Models with Style](#validate-models-with-style)
 * [Convert Domain Exceptions to HTTP Responses](#convert-domain-exceptions-to-http-responses)
 * [Rewrite Authorization Tokens in URL to HTTP Header](#rewrite-authorization-tokens-in-url-to-http-header)
+* [Rewrite Accept Parameter in URL to HTTP Accept Header](#rewrite-accept-parameter-in-url-to-http-accept-header)
 * [Test Against External HTTP APIs](#test-against-external-http-apis)
 * [Log API Exceptions via log4net](#log-api-exceptions-via-log4net)
 
@@ -189,6 +190,19 @@ If only there was a way to set arbitrary HTTP headers for an `a` tag. You want t
 ```c#
 //config is the global HttpConfiguration
 config.MessageHandlers.Add(new AuthHeaderManipulator());
+```
+
+### Rewrite Accept Parameter in URL to HTTP Accept Header
+
+Configuring the `AcceptHeaderHandler` will rewrite a query string `accept` parameter to a proper `HTTP Accept` header.
+
+```html
+<a href="/api/resource/which/normally/returns/json/but/honors/accept/headers?accept=text/csv"></a>
+```
+
+```c#
+//config is the global HttpConfiguration
+config.MessageHandlers.Add(new AcceptHeaderHandler());
 ```
 
 ### Test Against External HTTP APIs
