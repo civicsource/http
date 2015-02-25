@@ -30,7 +30,7 @@ namespace Archon.WebApi
 			}
 			else
 			{
-				context.ActionArguments[name] = new object[0];
+				context.ActionArguments[name] = Array.CreateInstance(type, 0);
 			}
 		}
 
