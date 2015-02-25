@@ -12,10 +12,12 @@ namespace Archon.WebApi
 	public class CsvStringArrayConverterAttribute : ActionFilterAttribute
 	{
 		readonly string name;
+		readonly Type type;
 
-		public CsvStringArrayConverterAttribute(string name)
+		public CsvStringArrayConverterAttribute(string name, Type type)
 		{
 			this.name = name;
+			this.type = type;
 		}
 
 		public override void OnActionExecuting(HttpActionContext context)
@@ -24,11 +26,23 @@ namespace Archon.WebApi
 
 			if (!String.IsNullOrWhiteSpace(csv))
 			{
-				context.ActionArguments[name] = csv.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(s => s.Trim()).ToArray();
+				context.ActionArguments[name] = csv.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(s => ConvertString(s.Trim())).ToArray();
 			}
 			else
 			{
-				context.ActionArguments[name] = new string[0];
+				context.ActionArguments[name] = new object[0];
+			}
+		}
+
+		object ConvertString(string str)
+		{
+			if (type == typeof(Guid))
+			{
+				return new Guid(str);
+			}
+			else
+			{
+				return Convert.ChangeType(str, this.type);
 			}
 		}
 
