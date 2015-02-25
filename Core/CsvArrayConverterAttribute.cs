@@ -9,12 +9,12 @@ using System.Net.Http;
 
 namespace Archon.WebApi
 {
-	public class CsvStringArrayConverterAttribute : ActionFilterAttribute
+	public class CsvArrayConverterAttribute : ActionFilterAttribute
 	{
 		readonly string name;
 		readonly Type type;
 
-		public CsvStringArrayConverterAttribute(string name, Type type)
+		public CsvArrayConverterAttribute(string name, Type type)
 		{
 			this.name = name;
 			this.type = type;

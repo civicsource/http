@@ -6,14 +6,14 @@ using Xunit;
 
 namespace Archon.WebApi.Tests
 {
-	public class CsvStringArrayConverterAttributeTests
+	public class CsvArrayConverterAttributeTests
 	{
-		protected CsvStringArrayConverterAttribute filter;
+		protected CsvArrayConverterAttribute filter;
 		protected Type type;
 
 		HttpActionContext SetupContext(string uri)
 		{
-			filter = new CsvStringArrayConverterAttribute("ids", type);
+			filter = new CsvArrayConverterAttribute("ids", type);
 			return ContextUtil.CreateActionContext(controllerContext: ContextUtil.CreateControllerContext(request: new HttpRequestMessage(HttpMethod.Post, uri)));
 		}
 

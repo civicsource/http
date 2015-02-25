@@ -59,7 +59,7 @@
     <Compile Include="AcceptHeaderHandler.cs" />
     <Compile Include="AuthorizeCorrectlyAttribute.cs" />
     <Compile Include="AuthToken.cs" />
-    <Compile Include="CsvStringArrayConverterAttribute.cs" />
+    <Compile Include="CsvArrayConverterAttribute.cs" />
     <Compile Include="DomainExceptionFilterAttribute.cs" />
     <Compile Include="EnsureNoTrailingSlashAttribute.cs" />
     <Compile Include="EnsureTrailingSlashAttribute.cs" />
