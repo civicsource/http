@@ -44,8 +44,7 @@ namespace Archon.WebApi.Tests
 
 			var ids = ctx.ActionArguments["ids"];
 
-			Assert.NotNull(ids);
-			var values = (object[])ids;
+			var values = (string[])ids;
 			Assert.Empty(values);
 		}
 
@@ -60,8 +59,7 @@ namespace Archon.WebApi.Tests
 
 			var ids = ctx.ActionArguments["ids"];
 
-			Assert.NotNull(ids);
-			var values = (object[])ids;
+			var values = (Guid[])ids;
 			Assert.Equal(new Guid("BFD50AD0-9B01-4965-96AC-A54E6550EF51"), values[0]);
 		}
 
@@ -76,8 +74,7 @@ namespace Archon.WebApi.Tests
 
 			var ids = ctx.ActionArguments["ids"];
 
-			Assert.NotNull(ids);
-			var values = (object[])ids;
+			var values = (int[])ids;
 			Assert.Equal(3, values[2]);
 		}
 	}
