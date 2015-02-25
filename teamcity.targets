@@ -9,7 +9,7 @@
 		<build Condition="$(BUILD_NUMBER) != ''">$(BUILD_NUMBER)</build>
 
 		<major>1</major>
-		<minor>2</minor>
+		<minor>3</minor>
 		<patch>0</patch>
 
 		<semver Condition="$(prerelease) == ''">$(major).$(minor).$(patch)+{build.number}</semver>
