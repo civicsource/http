@@ -26,7 +26,14 @@ namespace Archon.WebApi
 
 			if (!String.IsNullOrWhiteSpace(csv))
 			{
-				context.ActionArguments[name] = csv.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(s => ConvertString(s.Trim())).ToArray();
+				var items = csv.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries).Select(s => ConvertString(s.Trim())).ToArray();
+
+				var arr = Array.CreateInstance(type, items.Count());
+
+				for (int i = 0; i < arr.Length; i++)
+					arr.SetValue(items[i], i);
+
+				context.ActionArguments[name] = arr;
 			}
 			else
 			{
