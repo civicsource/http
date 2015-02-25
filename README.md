@@ -263,16 +263,17 @@ config.Services.Add(typeof(IExceptionLogger), new Log4netExceptionLogger());
 The `CsvArrayConverterAttribute` is an action filter attribute that will take a csv string passed in the querystring and turn it into an array of a given type
 
 ```
-https://someapi/controller/action?ids=1,2,3
+https://example.com/mystuff/1,2,3
 ```
 
 ```C#
 [HttpGet]
-[Route("action")]
+[Route("mystuff/{ids}")]
 [CsvArrayConverter("ids",typeof(int)]
 public HttpResponseMessage DoSomethingWithIds(int[] ids)
 {
-	foreach(var id in ids){
+	foreach(var id in ids)
+	{
 		//do something	
 	}
 }
