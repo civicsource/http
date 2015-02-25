@@ -23,6 +23,7 @@ Make sure to add `using Archon.WebApi;` to the top of your files to get access t
 * [Rewrite Accept Parameter in URL to HTTP Accept Header](#rewrite-accept-parameter-in-url-to-http-accept-header)
 * [Test Against External HTTP APIs](#test-against-external-http-apis)
 * [Log API Exceptions via log4net](#log-api-exceptions-via-log4net)
+* [Convert a csv list querystring argument to an array of values](#csv-array-converter-attributes)
 
 ### The Link Concept
 
@@ -256,4 +257,23 @@ If you use `log4net` for all of your logging needs, you will want to log unhandl
 ```c#
 //config is the global HttpConfiguration
 config.Services.Add(typeof(IExceptionLogger), new Log4netExceptionLogger());
+```
+### CSV Array Converter Attributes
+
+The `CsvArrayConverterAttribute` is an action filter attribute that will take a csv string passed in the querystring and turn it into an array of a given type
+
+```
+https://someapi/controller/action?ids=1,2,3
+```
+
+```C#
+[HttpGet]
+[Route("action")]
+[CsvArrayConverter("ids",typeof(int)]
+public HttpResponseMessage DoSomethingWithIds(int[] ids)
+{
+	foreach(var id in ids){
+		//do something	
+	}
+}
 ```
