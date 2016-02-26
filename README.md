@@ -16,8 +16,6 @@ Make sure to add `using Archon.WebApi;` to the top of your files to get access t
 * [A Better Ensure Success](#a-better-ensure-success)
 * [Authorization Class](#authorization)
 * [Authorize Correctly](#authorize-correctly)
-* [Trailing Slash Attributes](#trailing-slash-attributes)
-* [Validate Models with Style](#validate-models-with-style)
 * [Rewrite Authorization Tokens in URL to HTTP Header](#rewrite-authorization-tokens-in-url-to-http-header)
 * [Rewrite Accept Parameter in URL to HTTP Accept Header](#rewrite-accept-parameter-in-url-to-http-accept-header)
 * [Test Against External HTTP APIs](#test-against-external-http-apis)
@@ -142,34 +140,6 @@ Unfortunately, the built-in `System.Web.Http.AuthorizeAttribute` always returns 
 //...register all of your other stuff...
 app.UseCorrectAuthorization();
 app.UseMvc();
-```
-
-### Trailing Slash Attributes
-
-[Trailing slashes (or the lack thereof) on URIs are important](http://cdivilly.wordpress.com/2014/03/11/why-trailing-slashes-on-uris-are-important/). The `EnsureTrailingSlashAttribute` is an action filter attribute that will ensure the request URI used to access an action method has a trailing slash. If it doesn't, it issues a permanent redirect to the correct URL. Its sibling, `EnsureNoTrailingSlashAttribute`, does the opposite.
-
-### Validate Models with Style
-
-The `ValidateModelAttribute` is an action filter attribute that will ensure your model state is valid. If it is not, it immediately returns an `HTTP 400 (Bad Request)` with the reason the model did not pass validation.
-
-Use the attributes from the `System.ComponentModel.DataAnnotations` namespace to decorate your models:
-
-```c#
-public class Authentication
-{
-	[Required]
-	public string Username { get; set; }
-
-	[Required]
-	public string Password { get; set; }
-}
-```
-
-Configure it globally for all API controllers:
-
-```c#
-//config is the global HttpConfiguration
-config.Filters.Add(new ValidateModelAttribute());
 ```
 
 ### Rewrite Authorization Tokens in URL to HTTP Header
