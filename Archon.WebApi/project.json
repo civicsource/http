@@ -6,11 +6,7 @@
   "projectUrl": "",
   "licenseUrl": "",
   "frameworks": {
-    "net451": {
-      "frameworkAssemblies": {
-        "System.Net.Http": "4.0.0.0"
-      }
-    },
+    "net451": { },
     "dotnet5.4": {
       "dependencies": {
         "Microsoft.CSharp": "4.0.1-beta-23516",
@@ -22,6 +18,7 @@
     }
   },
   "dependencies": {
+    "System.Net.Http": "4.0.1-beta-23516",
     "Microsoft.AspNet.Mvc.Core": "6.0.0-rc1-final"
   }
 }
