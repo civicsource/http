@@ -15,8 +15,7 @@ Make sure to add `using Archon.WebApi;` to the top of your files to get access t
 * [The Link Concept](#the-link-concept)
 * [A Better Ensure Success](#a-better-ensure-success)
 * [Authorization Class](#authorization)
-* [Authorize Correctly](#authorize-correctly)
-* [Rewrite Authorization Tokens in URL to HTTP Header](#rewrite-authorization-tokens-in-url-to-http-header)
+* [Authorization Enhancements](#authorization-enhancements)
 * [Rewrite Accept Parameter in URL to HTTP Accept Header](#rewrite-accept-parameter-in-url-to-http-accept-header)
 * [Test Against External HTTP APIs](#test-against-external-http-apis)
 * [Convert a csv list querystring argument to an array of values](#csv-array-converter-attributes)
@@ -129,29 +128,28 @@ request.Headers.Authorization = auth.AsHeader();
 //creates a new AuthenticationHeaderValue with the token value
 ```
 
-### Authorize Correctly
+### Authorization Enhancements
+
+#### `401` vs `403`
 
 The `401 Unauthorized` response should be reserved for requests that are not authenticated. The `403 Forbidden` response should be used for requests that are correctly authenticated, but do not have access to a particular resource. [See here for a discussion](http://stackoverflow.com/questions/3297048/403-forbidden-vs-401-unauthorized-http-responses) on this.
 
-Unfortunately, the built-in `System.Web.Http.AuthorizeAttribute` always returns a `401` no matter the nuances of the situation. The `AuthorizeCorrectlyMiddleware` makes ASP.Net MVC behave like it should. In `Startup.Configure`:
+Unfortunately, the built-in `AuthorizeAttribute` always returns a `401` no matter the nuances of the situation. The `AuthorizeCorrectlyMiddleware` makes ASP.Net MVC behave like it should.
 
-```c#
-//...register all of your other stuff...
-app.UseCorrectAuthorization();
-app.UseMvc();
-```
+#### Rewrite Authorization Tokens in URL to HTTP Header
 
-### Rewrite Authorization Tokens in URL to HTTP Header
-
-If only there was a way to set arbitrary HTTP headers for an `a` tag. You want to create a link to download a CSV file but the API endpoint the link is pointing to requires authentication. Using the `AuthHeaderManipulator`, you can just include the authorization header as a querystring for the link and it will be rewritten to a proper HTTP Authorization header.
+If only there was a way to set arbitrary HTTP headers for an `a` tag. You want to create a link to download a CSV file but the API endpoint the link is pointing to requires authentication. Using the `AuthHeaderMiddleware`, you can just include the authorization header as a querystring for the link and it will be rewritten to a proper HTTP Authorization header.
 
 ```html
 <a href="/api/stuff.csv?auth=my-auth-token"></a>
 ```
 
+To use both of these enhancements, add the following to your `Startup.Configure`:
+
 ```c#
-//config is the global HttpConfiguration
-config.MessageHandlers.Add(new AuthHeaderManipulator());
+//...register all of your other stuff...
+app.UseCorrectAuthorization();
+app.UseMvc();
 ```
 
 ### Rewrite Accept Parameter in URL to HTTP Accept Header
