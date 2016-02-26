@@ -1,6 +1,8 @@
 bin
 obj
 packages
-AssemblyVersion.cs
+artifacts
+project.lock.json
+.vs
 *.suo
 *.user
