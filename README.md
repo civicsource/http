@@ -20,7 +20,6 @@ Make sure to add `using Archon.WebApi;` to the top of your files to get access t
 * [Rewrite Accept Parameter in URL to HTTP Accept Header](#rewrite-accept-parameter-in-url-to-http-accept-header)
 * [Test Against External HTTP APIs](#test-against-external-http-apis)
 * [Convert a csv list querystring argument to an array of values](#csv-array-converter-attributes)
-* [Use multiple controller types with the same route prefix](#use-multiple-controller-types-with-the-same-route-prefix)
 
 ### The Link Concept
 
@@ -240,49 +239,3 @@ public HttpResponseMessage DoSomethingWithIds(int[] ids)
 	}
 }
 ```
-
-### Use multiple controller types with the same route prefix
-
-> See [this stackoverflow question](http://stackoverflow.com/questions/23094584/multiple-controller-types-with-same-route-prefix-asp-net-web-api) for the motivation and inspiration for this feature.
-
-The `XXXRouteAttribute` classes can be used in place of the `RouteAttribute` to allow you to include multiple controllers with the same route (e.g. if you want to split `GET`s and `POST`s for the same route into multiple controllers). The following are included: `GetRouteAttribute`, `HeadRouteAttribute`, `PostRouteAttribute`, `PatchRouteAttribute`, `PutRouteAttribute`, & `DeleteRouteAttribute`. You can add another `HttpMethod` if you need it by subclassing `MethodConstraintedRouteAttribute`.
-
-Instead of this:
-
-```c#
-public class BooksWriteController : ApiController
-{
-	[HttpPost]
-    [Route("books")]
-    public void CreateNewBook() { }
-}
-
-[RoutePrefix("api/books")]
-public class BooksReadController : ApiController
-{
-    [HttpGet]
-    [Route("books")]
-    public void GetAllBooks() { }
-}
-```
-
-Do this:
-
-```c#
-public class BooksWriteController : ApiController
-{
-	[HttpPost]
-    [PostRoute("books")]
-    public void CreateNewBook() { }
-}
-
-[RoutePrefix("api/books")]
-public class BooksReadController : ApiController
-{
-	[HttpGet]
-    [GetRoute("books")]
-    public void GetAllBooks() { }
-}
-```
-
-This will avoid the dreaded _Multiple controller types were found that match the URL. This can happen if attribute routes on multiple controllers match the requested URL._ error.
