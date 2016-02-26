@@ -17,7 +17,7 @@ Make sure to add `using Archon.WebApi;` to the top of your files to get access t
 * [Authorization Class](#authorization)
 * [Authorization Enhancements](#authorization-enhancements)
 * [Rewrite Accept Parameter in URL to HTTP Accept Header](#rewrite-accept-parameter-in-url-to-http-accept-header)
-* [Convert a csv list querystring argument to an array of values](#csv-array-converter-attributes)
+* [Bind CSV Values to Routes](#bind-csv-values-to-routes)
 
 ### The Link Concept
 
@@ -167,17 +167,9 @@ app.UseEnhancements();
 app.UseMvc();
 ```
 
-### Log API Exceptions via [log4net](http://logging.apache.org/log4net/)
+### Bind CSV Values to Routes
 
-If you use `log4net` for all of your logging needs, you will want to log unhandled exceptions in your WebAPI project. Register the `Log4netExceptionLogger` (available in the [`Archon.WebApi.Logging`](https://www.nuget.org/packages/Archon.WebApi.Logging/) package) to do just that.
-
-```c#
-//config is the global HttpConfiguration
-config.Services.Add(typeof(IExceptionLogger), new Log4netExceptionLogger());
-```
-### CSV Array Converter Attributes
-
-The `CsvArrayConverterAttribute` is an action filter attribute that will take a csv string passed in the querystring and turn it into an array of a given type
+The `CsvModelBinder` is a model binder that will take a csv string passed as a query string, route parameter, or request body and turn it into an array of a given type.
 
 ```
 https://example.com/mystuff/1,2,3
@@ -186,12 +178,20 @@ https://example.com/mystuff/1,2,3
 ```c#
 [HttpGet]
 [Route("mystuff/{ids}")]
-[CsvArrayConverter("ids",typeof(int)]
-public HttpResponseMessage DoSomethingWithIds(int[] ids)
+public HttpResponseMessage DoSomethingWithIds(int[] ids /* or IEnumerable<int> ids */)
 {
-	foreach(var id in ids)
+	foreach (var id in ids)
 	{
 		//do something	
 	}
 }
+```
+
+Register it in `Startup.ConfigureServices`:
+
+```c#
+services.AddMvc().AddMvcOptions(opts =>
+{
+	opts.ModelBinders.Add(new CsvModelBinder());
+});
 ```
