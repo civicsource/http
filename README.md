@@ -137,7 +137,13 @@ request.Headers.Authorization = auth.AsHeader();
 
 The `401 Unauthorized` response should be reserved for requests that are not authenticated. The `403 Forbidden` response should be used for requests that are correctly authenticated, but do not have access to a particular resource. [See here for a discussion](http://stackoverflow.com/questions/3297048/403-forbidden-vs-401-unauthorized-http-responses) on this.
 
-Unfortunately, the built-in `System.Web.Http.AuthorizeAttribute` always returns a `401` no matter the nuances of the situation. The `AuthorizeCorrectly` attribute behaves like it should.
+Unfortunately, the built-in `System.Web.Http.AuthorizeAttribute` always returns a `401` no matter the nuances of the situation. The `AuthorizeCorrectlyMiddleware` makes ASP.Net MVC behave like it should. In `Startup.Configure`:
+
+```c#
+//...register all of your other stuff...
+app.UseCorrectAuthorization();
+app.UseMvc();
+```
 
 ### Trailing Slash Attributes
 
@@ -250,6 +256,14 @@ fake.Action = (req, c) =>
 
 If you don't specify any `Action`, the `FakeHttpHandler` will return an `HTTP 200 (OK)`.
 
+### Log API Exceptions via [log4net](http://logging.apache.org/log4net/)
+
+If you use `log4net` for all of your logging needs, you will want to log unhandled exceptions in your WebAPI project. Register the `Log4netExceptionLogger` (available in the [`Archon.WebApi.Logging`](https://www.nuget.org/packages/Archon.WebApi.Logging/) package) to do just that.
+
+```c#
+//config is the global HttpConfiguration
+config.Services.Add(typeof(IExceptionLogger), new Log4netExceptionLogger());
+```
 ### CSV Array Converter Attributes
 
 The `CsvArrayConverterAttribute` is an action filter attribute that will take a csv string passed in the querystring and turn it into an array of a given type
