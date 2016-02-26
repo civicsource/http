@@ -17,7 +17,6 @@ Make sure to add `using Archon.WebApi;` to the top of your files to get access t
 * [Authorization Class](#authorization)
 * [Authorization Enhancements](#authorization-enhancements)
 * [Rewrite Accept Parameter in URL to HTTP Accept Header](#rewrite-accept-parameter-in-url-to-http-accept-header)
-* [Test Against External HTTP APIs](#test-against-external-http-apis)
 * [Convert a csv list querystring argument to an array of values](#csv-array-converter-attributes)
 
 ### The Link Concept
@@ -164,50 +163,6 @@ Configuring the `AcceptHeaderHandler` will rewrite a query string `accept` param
 //config is the global HttpConfiguration
 config.MessageHandlers.Add(new AcceptHeaderHandler());
 ```
-
-### Test Against External HTTP APIs
-
-When you are testing some code that calls out to an external HTTP service using the `HttpClient`, you will want to isolate and mock out the external HTTP request. You can use the `FakeHttpHandler` to do that for you.
-
-First, set the fake handler up:
-
-```c#
-//create your fake handler
-var fake = new FakeHttpHandler();
-
-//configure the HttpClient
-var client = new HttpClient(fake);
-
-//register the fake HttpClient in your dependency container of choice
-```
-
-Your code under test:
-
-```c#
-var response = await client.PostAsJsonAsync("/api/stuff/", new
-{
-	name = "Homer Simpson",
-	location = "Springfield"
-});
-```
-
-Your test code:
-
-```c#
-fake.Action = (req, c) =>
-{
-	dynamic payload = req.Content.ReadAsAsync<ExpandoObject>().Result;
-	//do some asserts on the payload
-
-	//mock out the response you want to send
-	return Task.FromResult(req.CreateResponse(HttpStatusCode.BadRequest, new
-	{
-		message = "These aren't the droids you are looking for."
-	}));
-};
-```
-
-If you don't specify any `Action`, the `FakeHttpHandler` will return an `HTTP 200 (OK)`.
 
 ### Log API Exceptions via [log4net](http://logging.apache.org/log4net/)
 
