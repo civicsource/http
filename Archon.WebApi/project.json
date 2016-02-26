@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0-*",
+  "version": "2.0.0-beta1",
   "description": "Archon.WebApi Class Library",
   "authors": [ "chad.lee" ],
   "tags": [ "" ],
