@@ -18,7 +18,6 @@ Make sure to add `using Archon.WebApi;` to the top of your files to get access t
 * [Authorize Correctly](#authorize-correctly)
 * [Trailing Slash Attributes](#trailing-slash-attributes)
 * [Validate Models with Style](#validate-models-with-style)
-* [Convert Domain Exceptions to HTTP Responses](#convert-domain-exceptions-to-http-responses)
 * [Rewrite Authorization Tokens in URL to HTTP Header](#rewrite-authorization-tokens-in-url-to-http-header)
 * [Rewrite Accept Parameter in URL to HTTP Accept Header](#rewrite-accept-parameter-in-url-to-http-accept-header)
 * [Test Against External HTTP APIs](#test-against-external-http-apis)
@@ -171,19 +170,6 @@ Configure it globally for all API controllers:
 ```c#
 //config is the global HttpConfiguration
 config.Filters.Add(new ValidateModelAttribute());
-```
-
-### Convert Domain Exceptions to HTTP Responses
-
-The `DomainExceptionFilterAttribute` is an action filter attribute that will convert common domain model exceptions to proper HTTP response codes. E.g., if your domain model constructor already throws an `ArgumentNullException` when creating a new entity to be saved, the `DomainExceptionFilterAttribute` converts that exception to an `HTTP 400 (Bad Request)` with the exception message as the response content.
-
-It currently converts anything that inherits from `ArgumentException` to an `HTTP 400` and `InvalidOperationException` to `HTTP 409`.
-
-Configure it globally for all API controllers:
-
-```c#
-//config is the global HttpConfiguration
-config.Filters.Add(new DomainExceptionFilterAttribute());
 ```
 
 ### Rewrite Authorization Tokens in URL to HTTP Header
