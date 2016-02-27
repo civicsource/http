@@ -1,10 +1,12 @@
 {
   "version": "2.0.0-beta1",
-  "description": "Archon.WebApi Class Library",
-  "authors": [ "chad.lee" ],
-  "tags": [ "" ],
-  "projectUrl": "",
-  "licenseUrl": "",
+  "summary": "Archon Http Utilities",
+  "description": "Extensions, middleware, and helper methods that make working with HttpClient and Asp.Net MVC easier as an API.",
+  "authors": [ "Archon Information Systems, LLC" ],
+  "tags": [ "webapi", "utils", "api", "http", "model binders", "middleware", "authorization" ],
+  "projectUrl": "https://github.com/civicsource/http",
+  "licenseUrl": "https://github.com/civicsource/http/blob/master/LICENSE",
+
   "frameworks": {
     "net451": { },
     "dotnet5.4": {
