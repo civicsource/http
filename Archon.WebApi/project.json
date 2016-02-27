@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "System.Net.Http": "4.0.1-beta-23516",
-    "Microsoft.AspNet.Mvc.Core": "6.0.0-rc1-final"
+    "Microsoft.AspNet.Mvc.Core": "6.0.0-rc1-final",
+    "Microsoft.AspNet.WebApi.Client": "5.2.3"
   }
 }
