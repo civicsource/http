@@ -147,21 +147,24 @@ To use both of these enhancements, add the following to your `Startup.Configure`
 
 ```c#
 //...register all of your other stuff...
-app.UseCorrectAuthorization();
+app.UseEnhancements();
 app.UseMvc();
 ```
 
 ### Rewrite Accept Parameter in URL to HTTP Accept Header
 
-Configuring the `AcceptHeaderHandler` will rewrite a query string `accept` parameter to a proper `HTTP Accept` header.
+Configuring the `AcceptHeaderMiddleware` will rewrite a query string `accept` parameter to a proper `HTTP Accept` header.
 
 ```html
 <a href="/api/resource/which/normally/returns/json/but/honors/accept/headers?accept=text/csv"></a>
 ```
 
+To use, add the following to your `Startup.Configure`:
+
 ```c#
-//config is the global HttpConfiguration
-config.MessageHandlers.Add(new AcceptHeaderHandler());
+//...register all of your other stuff...
+app.UseEnhancements();
+app.UseMvc();
 ```
 
 ### Log API Exceptions via [log4net](http://logging.apache.org/log4net/)
