@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Net.Http;
-using System.Threading;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Archon.WebApi
@@ -28,9 +28,10 @@ namespace Archon.WebApi
 			if (Authorization != null)
 				return Authorization;
 
-			var token = Thread.CurrentPrincipal as AuthToken;
-			if (token != null)
-				return Authorization.Bearer(token.Token);
+			var claim = ClaimsPrincipal.Current.FindFirst("Token");
+
+			if (claim != null && !String.IsNullOrWhiteSpace(claim.Value))
+				return Authorization.Bearer(claim.Value);
 
 			return null;
 		}
