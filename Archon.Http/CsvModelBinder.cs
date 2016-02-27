@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Mvc.ModelBinding;
 
-namespace Archon.WebApi
+namespace Archon.Http
 {
 	public class CsvModelBinder : IModelBinder
 	{

@@ -1,7 +1,7 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Archon.WebApi
+namespace Archon.Http
 {
 	public interface Link
 	{

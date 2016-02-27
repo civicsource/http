@@ -3,7 +3,7 @@ using System.Linq;
 using System.Net.Http.Headers;
 using System.Text;
 
-namespace Archon.WebApi
+namespace Archon.Http
 {
 	public class Authorization
 	{

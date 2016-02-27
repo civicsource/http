@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNet.Builder;
 using Microsoft.AspNet.Http;
 
-namespace Archon.WebApi
+namespace Archon.Http
 {
 	public class AcceptHeaderMiddleware
 	{

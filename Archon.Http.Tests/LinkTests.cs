@@ -1,10 +1,10 @@
 ﻿using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Archon.WebApi.Tests.Links;
+using Archon.Http.Tests.Links;
 using Xunit;
 
-namespace Archon.WebApi.Tests
+namespace Archon.Http.Tests
 {
 	public class LinkTests
 	{

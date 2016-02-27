@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Xunit;
 
-namespace Archon.WebApi.Tests
+namespace Archon.Http.Tests
 {
 	public class CsvModelBinderTests
 	{

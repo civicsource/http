@@ -4,7 +4,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Archon.WebApi.Tests
+namespace Archon.Http.Tests
 {
 	class FakeHttpHandler : HttpMessageHandler
 	{

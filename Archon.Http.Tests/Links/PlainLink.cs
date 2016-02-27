@@ -1,6 +1,6 @@
 ﻿using System.Net.Http;
 
-namespace Archon.WebApi.Tests.Links
+namespace Archon.Http.Tests.Links
 {
 	class PlainLink : Link
 	{

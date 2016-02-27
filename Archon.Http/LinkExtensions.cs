@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net.Http;
 
-namespace Archon.WebApi
+namespace Archon.Http
 {
 	public static class LinkExtensions
 	{

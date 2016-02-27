@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNet.Builder;
 
-namespace Archon.WebApi
+namespace Archon.Http
 {
 	public static class MiddlewareExtensions
 	{

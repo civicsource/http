@@ -3,9 +3,14 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Archon.WebApi", "Archon.WebApi\Archon.WebApi.xproj", "{B1F7B2A0-EE3C-4945-9BA1-1784528C92EF}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Archon.Http", "Archon.Http\Archon.Http.xproj", "{B1F7B2A0-EE3C-4945-9BA1-1784528C92EF}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Archon.WebApi.Tests", "Archon.WebApi.Tests\Archon.WebApi.Tests.xproj", "{2AEF8D5E-0A8B-4080-852C-05E0C4188FF1}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Archon.Http.Tests", "Archon.Http.Tests\Archon.Http.Tests.xproj", "{2AEF8D5E-0A8B-4080-852C-05E0C4188FF1}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{211EDFE8-A357-49E1-875A-F7DBB367FF99}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

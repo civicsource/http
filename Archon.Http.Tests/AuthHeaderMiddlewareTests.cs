@@ -3,7 +3,7 @@ using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Http.Internal;
 using Xunit;
 
-namespace Archon.WebApi.Tests
+namespace Archon.Http.Tests
 {
 	public class AuthHeaderMiddlewareTests
 	{

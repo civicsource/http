@@ -1,7 +1,7 @@
 ﻿using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace Archon.WebApi.Tests.Links
+namespace Archon.Http.Tests.Links
 {
 	class LinkWithResponse : PlainLink, Link<string>
 	{

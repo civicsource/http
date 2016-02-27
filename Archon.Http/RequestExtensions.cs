@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
 
-namespace Archon.WebApi
+namespace Archon.Http
 {
 	public static class RequestExtensions
 	{

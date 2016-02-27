@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Archon.WebApi
+namespace Archon.Http
 {
 	public abstract class AuthorizedLink : Link
 	{

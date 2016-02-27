@@ -22,7 +22,7 @@
     "System.Net.Http": "4.0.1-beta-23516",
     "Microsoft.AspNet.Mvc.Core": "6.0.0-rc1-final",
     "Microsoft.AspNet.WebApi.Client": "5.2.3",
-    "Archon.WebApi": "2.0.0-*",
+    "Archon.Http": "2.0.0-*",
     "xunit": "2.2.0-beta1-build3239",
     "xunit.runner.dnx": "2.1.0-rc1-build204",
     "Microsoft.AspNet.Http": "1.0.0-rc1-final"

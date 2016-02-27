@@ -3,7 +3,7 @@ using System.Net.Http;
 using System.Net.Http.Formatting;
 using System.Threading.Tasks;
 
-namespace Archon.WebApi
+namespace Archon.Http
 {
 	/// <remarks>
 	/// http://benfoster.io/blog/adding-patch-support-to-httpclient

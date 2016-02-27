@@ -1,6 +1,6 @@
 ﻿using Xunit;
 
-namespace Archon.WebApi.Tests
+namespace Archon.Http.Tests
 {
 	public class AuthorizationTests
 	{
