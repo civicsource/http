@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -10,35 +11,61 @@ namespace Archon.WebApi
 {
 	public class CsvModelBinder : IModelBinder
 	{
-		static readonly MethodInfo generateListMethod = typeof(CsvModelBinder).GetMethod("GenerateList", BindingFlags.NonPublic);
+		static readonly MethodInfo generateListMethod = typeof(CsvModelBinder).GetMethod("GenerateList", BindingFlags.NonPublic | BindingFlags.Instance);
 
 		public Task<ModelBindingResult> BindModelAsync(ModelBindingContext ctx)
 		{
-			if (!typeof(IEnumerable).GetTypeInfo().IsAssignableFrom(ctx.ModelType.GetTypeInfo()))
+			var model = BindModel(ctx.ModelType, ctx.ValueProvider.GetValue(ctx.ModelName).FirstValue);
+
+			if (model == null)
 				return ModelBindingResult.NoResultAsync;
 
-			string value = ctx.ValueProvider.GetValue(ctx.ModelName).FirstValue;
+			return ModelBindingResult.SuccessAsync(ctx.ModelName, model);
+		}
 
-			if (String.IsNullOrWhiteSpace(value) || !value.Contains(","))
-				return ModelBindingResult.NoResultAsync;
+		public IEnumerable BindModel(Type modelType, string value)
+		{
+			if (!typeof(IEnumerable).GetTypeInfo().IsAssignableFrom(modelType.GetTypeInfo()))
+				return null;
 
-			Type elementType = ctx.ModelType.GetElementType() ?? ctx.ModelType.GetGenericArguments().FirstOrDefault() ?? typeof(string);
+			Type elementType = modelType.GetElementType() ?? modelType.GetGenericArguments().FirstOrDefault();
+
+			if (elementType == null)
+				return null;
 
 			var method = generateListMethod.MakeGenericMethod(elementType);
 
-			IEnumerable list = (IEnumerable)method.Invoke(this, new object[0]);
-			return ModelBindingResult.SuccessAsync(ctx.ModelName, list);
+			return (IEnumerable)method.Invoke(this, new object[] { value });
 		}
 
-		IEnumerable<T> GenerateList<T>(string value)
+		IEnumerable<T> GenerateList<T>(string values)
 		{
 			var list = new List<T>();
 
-			string[] parts = value.Split(',');
-			foreach (string item in parts)
-				list.Add((T)Convert.ChangeType(item, typeof(T)));
+			if (!String.IsNullOrWhiteSpace(values))
+			{
+				string[] parts = values.Split(',');
+				foreach (string item in parts)
+				{
+					if (!String.IsNullOrWhiteSpace(item))
+					{
+						T value = default(T);
+						bool add = false;
 
-			return list;
+						try
+						{
+							value = (T)TypeDescriptor.GetConverter(typeof(T)).ConvertFromInvariantString(item.Trim());
+							add = true;
+						}
+						catch { /* swallow any formatting exceptions */ }
+
+						if (add)
+							list.Add(value);
+					}
+				}
+			}
+
+			return list.ToArray();
 		}
 	}
 }
