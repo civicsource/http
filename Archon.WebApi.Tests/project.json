@@ -7,8 +7,8 @@
   "licenseUrl": "",
 
   "frameworks": {
-    "net451": { },
-    "dotnet5.4": {
+    "dnx451": { },
+    "dnxcore50": {
       "dependencies": {
         "Microsoft.CSharp": "4.0.1-beta-23516",
         "System.Collections": "4.0.11-beta-23516",
@@ -17,5 +17,16 @@
         "System.Threading": "4.0.11-beta-23516"
       }
     }
+  },
+  "dependencies": {
+    "System.Net.Http": "4.0.1-beta-23516",
+    "Microsoft.AspNet.Mvc.Core": "6.0.0-rc1-final",
+    "Microsoft.AspNet.WebApi.Client": "5.2.3",
+    "Archon.WebApi": "2.0.0-*",
+    "xunit": "2.2.0-beta1-build3239",
+    "xunit.runner.dnx":  "2.1.0-rc1-build204"
+  },
+  "commands": {
+    "test": "xunit.runner.dnx"
   }
 }
