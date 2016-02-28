@@ -1,13 +1,13 @@
-# Archon Web API Framework
+# Archon Http Utilities
 
-> Extension & helper methods that make working with [Asp.Net Web API](http://www.asp.net/web-api) easier.
+> Extensions, middleware, and helper methods that make working with HttpClient and Asp.Net MVC easier as an API
 
 ## How to Use
 
-Install via [nuget](https://www.nuget.org/packages/Archon.WebApi/)
+Install via [nuget](https://www.nuget.org/packages/Archon.Http/)
 
 ```
-install-package Archon.WebApi
+install-package Archon.Http
 ```
 
 Make sure to add `using Archon.WebApi;` to the top of your files to get access to any of the following extension methods.
