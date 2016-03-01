@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-beta1",
+  "version": "2.0.0-beta2",
   "summary": "Archon Http Utilities",
   "description": "Extensions, middleware, and helper methods that make working with HttpClient and Asp.Net MVC easier as an API.",
   "authors": [ "Archon Information Systems, LLC" ],

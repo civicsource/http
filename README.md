@@ -15,7 +15,6 @@ Make sure to add `using Archon.WebApi;` to the top of your files to get access t
 * [The Link Concept](#the-link-concept)
 * [A Better Ensure Success](#a-better-ensure-success)
 * [Authorization Class](#authorization)
-* [Authorization Enhancements](#authorization-enhancements)
 * [Rewrite Accept Parameter in URL to HTTP Accept Header](#rewrite-accept-parameter-in-url-to-http-accept-header)
 * [Bind CSV Values to Routes](#bind-csv-values-to-routes)
 
@@ -127,30 +126,6 @@ request.Headers.Authorization = auth.AsHeader();
 //creates a new AuthenticationHeaderValue with the token value
 ```
 
-### Authorization Enhancements
-
-#### `401` vs `403`
-
-The `401 Unauthorized` response should be reserved for requests that are not authenticated. The `403 Forbidden` response should be used for requests that are correctly authenticated, but do not have access to a particular resource. [See here for a discussion](http://stackoverflow.com/questions/3297048/403-forbidden-vs-401-unauthorized-http-responses) on this.
-
-Unfortunately, the built-in `AuthorizeAttribute` always returns a `401` no matter the nuances of the situation. The `AuthorizeCorrectlyMiddleware` makes ASP.Net MVC behave like it should.
-
-#### Rewrite Authorization Tokens in URL to HTTP Header
-
-If only there was a way to set arbitrary HTTP headers for an `a` tag. You want to create a link to download a CSV file but the API endpoint the link is pointing to requires authentication. Using the `AuthHeaderMiddleware`, you can just include the authorization header as a querystring for the link and it will be rewritten to a proper HTTP Authorization header.
-
-```html
-<a href="/api/stuff.csv?auth=my-auth-token"></a>
-```
-
-To use both of these enhancements, add the following to your `Startup.Configure`:
-
-```c#
-//...register all of your other stuff...
-app.UseEnhancements();
-app.UseMvc();
-```
-
 ### Rewrite Accept Parameter in URL to HTTP Accept Header
 
 Configuring the `AcceptHeaderMiddleware` will rewrite a query string `accept` parameter to a proper `HTTP Accept` header.
@@ -159,11 +134,11 @@ Configuring the `AcceptHeaderMiddleware` will rewrite a query string `accept` pa
 <a href="/api/resource/which/normally/returns/json/but/honors/accept/headers?accept=text/csv"></a>
 ```
 
-To use, add the following to your `Startup.Configure`:
+To use, add `app.UseAcceptHeaderRewriter()` to your `Startup.Configure`:
 
 ```c#
 //...register all of your other stuff...
-app.UseEnhancements();
+app.UseAcceptHeaderRewriter();
 app.UseMvc();
 ```
 
