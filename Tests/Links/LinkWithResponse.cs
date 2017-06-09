@@ -10,4 +10,14 @@ namespace Archon.WebApi.Tests.Links
 			return await response.Content.ReadAsStringAsync();
 		}
 	}
+
+	class CustomLinkWithResponse : CustomLink, Link<string>
+	{
+		public CustomLinkWithResponse(string uri) : base(uri) { }
+
+		public async Task<string> ParseResponseAsync(HttpResponseMessage response)
+		{
+			return await response.Content.ReadAsStringAsync();
+		}
+	}
 }

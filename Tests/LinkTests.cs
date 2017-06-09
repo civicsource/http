@@ -34,5 +34,45 @@ namespace Archon.WebApi.Tests
 			string response = client.Send(new LinkWithResponse());
 			Assert.Equal("this is a test", response);
 		}
+
+		[Fact]
+		public void can_send_a_link_with_multiple_actions_and_parse_the_response ()
+		{
+			handler.Action = (req, c) => Task.FromResult(new HttpResponseMessage
+			{
+				Content = new StringContent("this is a test")
+			});
+
+			handler.Action = (req, c) => Task.FromResult(new HttpResponseMessage
+			{
+				Content = new StringContent("this is a test too")
+			});
+
+			string response = client.Send(new LinkWithResponse());
+			Assert.Equal("this is a test", response);
+		}
+
+		[Fact]
+		public void can_send_a_link_with_multiple_actions_and_handle_them_conditionally()
+		{
+			handler.Action = (req, c) =>
+			{
+				var uriString = req.RequestUri.AbsolutePath.ToString();
+				if (uriString.Contains("OogaBooga"))
+				{
+					return Task.FromResult(new HttpResponseMessage { Content = new StringContent("this is a test") });
+				}
+
+				return null;
+			};
+
+			handler.Action = (req, c) => Task.FromResult(new HttpResponseMessage
+			{
+				Content = new StringContent("this is a test too")
+			});
+
+			string response = client.Send(new CustomLinkWithResponse("OogaBooga"));
+			Assert.Equal("this is a test", response);
+		}
 	}
 }

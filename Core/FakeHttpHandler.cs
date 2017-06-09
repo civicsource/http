@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -12,7 +14,26 @@ namespace Archon.WebApi
 	{
 		bool hasBeenCalled = false;
 
-		public Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> Action { get; set; }
+		public Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>> Action
+		{
+			get
+			{
+				return actions.LastOrDefault();
+			}
+			set
+			{
+				actions.Add(value);
+			}
+		}
+
+		private List<Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>>> actions = new List<Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>>>();
+		public IEnumerable<Func<HttpRequestMessage, CancellationToken, Task<HttpResponseMessage>>> Actions
+		{
+			get
+			{
+				return actions;
+			}
+		}
 
 		protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
 		{
@@ -20,10 +41,14 @@ namespace Archon.WebApi
 
 			hasBeenCalled = true;
 
-			if (Action == null)
-				return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK));
+			foreach (var ac in Actions)
+			{
+				var response = ac(request, cancellationToken);
+				if (response != null)
+					return response;
+			}
 
-			return Action(request, cancellationToken);
+			return Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK));
 		}
 
 		public void AssertHasBeenCalled()
