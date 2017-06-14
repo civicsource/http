@@ -5,7 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Microsoft.AspNet.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Archon.Http
 {
@@ -13,14 +13,11 @@ namespace Archon.Http
 	{
 		static readonly MethodInfo generateListMethod = typeof(CsvModelBinder).GetMethod("GenerateList", BindingFlags.NonPublic | BindingFlags.Instance);
 
-		public Task<ModelBindingResult> BindModelAsync(ModelBindingContext ctx)
+		public Task BindModelAsync(ModelBindingContext ctx)
 		{
 			var model = BindModel(ctx.ModelType, ctx.ValueProvider.GetValue(ctx.ModelName).FirstValue);
-
-			if (model == null)
-				return ModelBindingResult.NoResultAsync;
-
-			return ModelBindingResult.SuccessAsync(ctx.ModelName, model);
+			ctx.Result = model == null ? ModelBindingResult.Failed() : ModelBindingResult.Success(model);
+			return Task.FromResult<object>(null);
 		}
 
 		public IEnumerable BindModel(Type modelType, string value)

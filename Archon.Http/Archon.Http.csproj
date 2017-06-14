@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Extensions, middleware, and helper methods that make working with HttpClient and Asp.Net MVC easier as an API.</Description>
+    <VersionPrefix>2.0.0-beta2</VersionPrefix>
+    <Authors>Archon Information Systems, LLC</Authors>
+    <TargetFramework>netstandard1.3</TargetFramework>
+    <AssemblyName>Archon.Http</AssemblyName>
+    <RootNamespace>Archon.Http</RootNamespace>
+    <PackageTags>webapi;utils;api;http;model binders;middleware;authorization</PackageTags>
+    <PackageProjectUrl>https://github.com/civicsource/http</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/civicsource/http/blob/master/LICENSE</PackageLicenseUrl>
+    <Version>1.0.0</Version>
+    <RepositoryUrl>https://github.com/civicsource/http.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <Product>Archon Http Utilities</Product>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <TreatSpecificWarningsAsErrors />
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="1.1.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="1.1.3" />
+    <PackageReference Include="System.Net.Http" Version="4.3.2" />
+  </ItemGroup>
+
+</Project>

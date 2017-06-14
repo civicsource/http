@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>    
+    <TargetFramework>netcoreapp1.1</TargetFramework>    
+    <AssemblyName>Archon.Http.Tests</AssemblyName>    
+    <RootNamespace>Archon.Http.Tests</RootNamespace>    
+    <PackageTags>webapi;utils;api;http;model binders;middleware;authorization</PackageTags>    
+    <RepositoryType>git</RepositoryType>    
+    <RepositoryUrl>https://github.com/civicsource/http.git</RepositoryUrl>    
+    <PackageProjectUrl>https://github.com/civicsource/http</PackageProjectUrl>    
+    <PackageLicenseUrl>https://github.com/civicsource/http/blob/master/LICENSE</PackageLicenseUrl>    
+    <Description>Extensions, middleware, and helper methods that make working with HttpClient and Asp.Net MVC easier as an API.</Description>    
+    <Product>Archon Http Utilities</Product>    
+    <Company>Archon Information Systems, LLC</Company>    
+    <Authors>Archon Information Systems, LLC</Authors>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <TreatWarningsAsErrors>True</TreatWarningsAsErrors>
+    <TreatSpecificWarningsAsErrors />
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
+    <PackageReference Include="xunit" Version="2.2.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Archon.Http\Archon.Http.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+  </ItemGroup>
+
+</Project>
