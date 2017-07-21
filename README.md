@@ -1,13 +1,13 @@
-# Archon Web API Framework
+# Archon Http Utilities
 
-> Extension & helper methods that make working with [Asp.Net Web API](http://www.asp.net/web-api) easier.
+> Extensions, middleware, and helper methods that make working with HttpClient and Asp.Net MVC easier as an API
 
 ## How to Use
 
-Install via [nuget](https://www.nuget.org/packages/Archon.WebApi/)
+Install via [nuget](https://www.nuget.org/packages/Archon.Http/)
 
 ```
-install-package Archon.WebApi
+install-package Archon.Http
 ```
 
 Make sure to add `using Archon.WebApi;` to the top of your files to get access to any of the following extension methods.
@@ -15,16 +15,8 @@ Make sure to add `using Archon.WebApi;` to the top of your files to get access t
 * [The Link Concept](#the-link-concept)
 * [A Better Ensure Success](#a-better-ensure-success)
 * [Authorization Class](#authorization)
-* [Authorize Correctly](#authorize-correctly)
-* [Trailing Slash Attributes](#trailing-slash-attributes)
-* [Validate Models with Style](#validate-models-with-style)
-* [Convert Domain Exceptions to HTTP Responses](#convert-domain-exceptions-to-http-responses)
-* [Rewrite Authorization Tokens in URL to HTTP Header](#rewrite-authorization-tokens-in-url-to-http-header)
 * [Rewrite Accept Parameter in URL to HTTP Accept Header](#rewrite-accept-parameter-in-url-to-http-accept-header)
-* [Test Against External HTTP APIs](#test-against-external-http-apis)
-* [Log API Exceptions via log4net](#log-api-exceptions-via-log4net)
-* [Convert a csv list querystring argument to an array of values](#csv-array-converter-attributes)
-* [Use multiple controller types with the same route prefix](#use-multiple-controller-types-with-the-same-route-prefix)
+* [Bind CSV Values to Routes](#bind-csv-values-to-routes)
 
 ### The Link Concept
 
@@ -134,134 +126,25 @@ request.Headers.Authorization = auth.AsHeader();
 //creates a new AuthenticationHeaderValue with the token value
 ```
 
-### Authorize Correctly
-
-The `401 Unauthorized` response should be reserved for requests that are not authenticated. The `403 Forbidden` response should be used for requests that are correctly authenticated, but do not have access to a particular resource. [See here for a discussion](http://stackoverflow.com/questions/3297048/403-forbidden-vs-401-unauthorized-http-responses) on this.
-
-Unfortunately, the built-in `System.Web.Http.AuthorizeAttribute` always returns a `401` no matter the nuances of the situation. The `AuthorizeCorrectly` attribute behaves like it should.
-
-### Trailing Slash Attributes
-
-[Trailing slashes (or the lack thereof) on URIs are important](http://cdivilly.wordpress.com/2014/03/11/why-trailing-slashes-on-uris-are-important/). The `EnsureTrailingSlashAttribute` is an action filter attribute that will ensure the request URI used to access an action method has a trailing slash. If it doesn't, it issues a permanent redirect to the correct URL. Its sibling, `EnsureNoTrailingSlashAttribute`, does the opposite.
-
-### Validate Models with Style
-
-The `ValidateModelAttribute` is an action filter attribute that will ensure your model state is valid. If it is not, it immediately returns an `HTTP 400 (Bad Request)` with the reason the model did not pass validation.
-
-Use the attributes from the `System.ComponentModel.DataAnnotations` namespace to decorate your models:
-
-```c#
-public class Authentication
-{
-	[Required]
-	public string Username { get; set; }
-
-	[Required]
-	public string Password { get; set; }
-}
-```
-
-Configure it globally for all API controllers:
-
-```c#
-//config is the global HttpConfiguration
-config.Filters.Add(new ValidateModelAttribute());
-```
-
-### Convert Domain Exceptions to HTTP Responses
-
-The `DomainExceptionFilterAttribute` is an action filter attribute that will convert common domain model exceptions to proper HTTP response codes. E.g., if your domain model constructor already throws an `ArgumentNullException` when creating a new entity to be saved, the `DomainExceptionFilterAttribute` converts that exception to an `HTTP 400 (Bad Request)` with the exception message as the response content.
-
-It currently converts anything that inherits from `ArgumentException` to an `HTTP 400` and `InvalidOperationException` to `HTTP 409`.
-
-Configure it globally for all API controllers:
-
-```c#
-//config is the global HttpConfiguration
-config.Filters.Add(new DomainExceptionFilterAttribute());
-```
-
-### Rewrite Authorization Tokens in URL to HTTP Header
-
-If only there was a way to set arbitrary HTTP headers for an `a` tag. You want to create a link to download a CSV file but the API endpoint the link is pointing to requires authentication. Using the `AuthHeaderManipulator`, you can just include the authorization header as a querystring for the link and it will be rewritten to a proper HTTP Authorization header.
-
-```html
-<a href="/api/stuff.csv?auth=my-auth-token"></a>
-```
-
-```c#
-//config is the global HttpConfiguration
-config.MessageHandlers.Add(new AuthHeaderManipulator());
-```
-
 ### Rewrite Accept Parameter in URL to HTTP Accept Header
 
-Configuring the `AcceptHeaderHandler` will rewrite a query string `accept` parameter to a proper `HTTP Accept` header.
+Configuring the `AcceptHeaderMiddleware` will rewrite a query string `accept` parameter to a proper `HTTP Accept` header.
 
 ```html
 <a href="/api/resource/which/normally/returns/json/but/honors/accept/headers?accept=text/csv"></a>
 ```
 
-```c#
-//config is the global HttpConfiguration
-config.MessageHandlers.Add(new AcceptHeaderHandler());
-```
-
-### Test Against External HTTP APIs
-
-When you are testing some code that calls out to an external HTTP service using the `HttpClient`, you will want to isolate and mock out the external HTTP request. You can use the `FakeHttpHandler` to do that for you.
-
-First, set the fake handler up:
+To use, add `app.UseAcceptHeaderRewriter()` to your `Startup.Configure`:
 
 ```c#
-//create your fake handler
-var fake = new FakeHttpHandler();
-
-//configure the HttpClient
-var client = new HttpClient(fake);
-
-//register the fake HttpClient in your dependency container of choice
+//...register all of your other stuff...
+app.UseAcceptHeaderRewriter();
+app.UseMvc();
 ```
 
-Your code under test:
+### Bind CSV Values to Routes
 
-```c#
-var response = await client.PostAsJsonAsync("/api/stuff/", new
-{
-	name = "Homer Simpson",
-	location = "Springfield"
-});
-```
-
-Your test code:
-
-```c#
-fake.Action = (req, c) =>
-{
-	dynamic payload = req.Content.ReadAsAsync<ExpandoObject>().Result;
-	//do some asserts on the payload
-
-	//mock out the response you want to send
-	return Task.FromResult(req.CreateResponse(HttpStatusCode.BadRequest, new
-	{
-		message = "These aren't the droids you are looking for."
-	}));
-};
-```
-
-If you don't specify any `Action`, the `FakeHttpHandler` will return an `HTTP 200 (OK)`.
-
-### Log API Exceptions via [log4net](http://logging.apache.org/log4net/)
-
-If you use `log4net` for all of your logging needs, you will want to log unhandled exceptions in your WebAPI project. Register the `Log4netExceptionLogger` (available in the [`Archon.WebApi.Logging`](https://www.nuget.org/packages/Archon.WebApi.Logging/) package) to do just that.
-
-```c#
-//config is the global HttpConfiguration
-config.Services.Add(typeof(IExceptionLogger), new Log4netExceptionLogger());
-```
-### CSV Array Converter Attributes
-
-The `CsvArrayConverterAttribute` is an action filter attribute that will take a csv string passed in the querystring and turn it into an array of a given type
+The `CsvModelBinder` is a model binder that will take a csv string passed as a query string, route parameter, or request body and turn it into an array of a given type.
 
 ```
 https://example.com/mystuff/1,2,3
@@ -270,58 +153,20 @@ https://example.com/mystuff/1,2,3
 ```c#
 [HttpGet]
 [Route("mystuff/{ids}")]
-[CsvArrayConverter("ids",typeof(int)]
-public HttpResponseMessage DoSomethingWithIds(int[] ids)
+public HttpResponseMessage DoSomethingWithIds(int[] ids /* or IEnumerable<int> ids */)
 {
-	foreach(var id in ids)
+	foreach (var id in ids)
 	{
 		//do something	
 	}
 }
 ```
 
-### Use multiple controller types with the same route prefix
-
-> See [this stackoverflow question](http://stackoverflow.com/questions/23094584/multiple-controller-types-with-same-route-prefix-asp-net-web-api) for the motivation and inspiration for this feature.
-
-The `XXXRouteAttribute` classes can be used in place of the `RouteAttribute` to allow you to include multiple controllers with the same route (e.g. if you want to split `GET`s and `POST`s for the same route into multiple controllers). The following are included: `GetRouteAttribute`, `HeadRouteAttribute`, `PostRouteAttribute`, `PatchRouteAttribute`, `PutRouteAttribute`, & `DeleteRouteAttribute`. You can add another `HttpMethod` if you need it by subclassing `MethodConstraintedRouteAttribute`.
-
-Instead of this:
+Register it in `Startup.ConfigureServices`:
 
 ```c#
-public class BooksWriteController : ApiController
+services.AddMvc().AddMvcOptions(opts =>
 {
-	[HttpPost]
-    [Route("books")]
-    public void CreateNewBook() { }
-}
-
-[RoutePrefix("api/books")]
-public class BooksReadController : ApiController
-{
-    [HttpGet]
-    [Route("books")]
-    public void GetAllBooks() { }
-}
+	opts.ModelBinders.Add(new CsvModelBinder());
+});
 ```
-
-Do this:
-
-```c#
-public class BooksWriteController : ApiController
-{
-	[HttpPost]
-    [PostRoute("books")]
-    public void CreateNewBook() { }
-}
-
-[RoutePrefix("api/books")]
-public class BooksReadController : ApiController
-{
-	[HttpGet]
-    [GetRoute("books")]
-    public void GetAllBooks() { }
-}
-```
-
-This will avoid the dreaded _Multiple controller types were found that match the URL. This can happen if attribute routes on multiple controllers match the requested URL._ error.
