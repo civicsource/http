@@ -17,6 +17,7 @@ Make sure to add `using Archon.WebApi;` to the top of your files to get access t
 * [Authorization Class](#authorization)
 * [Rewrite Accept Parameter in URL to HTTP Accept Header](#rewrite-accept-parameter-in-url-to-http-accept-header)
 * [Bind CSV Values to Routes](#bind-csv-values-to-routes)
+* [Use JSON Exception Handling](#use-json-exception-handling)
 
 ### The Link Concept
 
@@ -170,3 +171,13 @@ services.AddMvc().AddMvcOptions(opts =>
 	opts.ModelBinders.Add(new CsvModelBinder());
 });
 ```
+
+### Use JSON Exception Handling
+
+If you are writing an API and want unhandled exceptions handled and returned to the client in a nice JSON way, you'll want to use this middleware. In your `Startup.Configure`:
+
+```c#
+app.UseJsonExceptionHandling();
+```
+
+This will handle exceptions in a similar way to how Asp.Net Web API used to handle them.
