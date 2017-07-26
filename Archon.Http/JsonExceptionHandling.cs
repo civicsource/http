@@ -9,7 +9,7 @@ namespace Archon.Http
 {
 	public static class JsonExceptionHandling
 	{
-		public static IApplicationBuilder UseJsonExceptionHandling(IApplicationBuilder app)
+		public static IApplicationBuilder UseJsonExceptionHandling(this IApplicationBuilder app)
 		{
 			app.UseExceptionHandler(builder =>
 			{
