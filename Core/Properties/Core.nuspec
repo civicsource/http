@@ -1,0 +1,14 @@
+﻿<?xml version="1.0"?>
+<package>
+	<metadata>
+		<id>$id$</id>
+		<version>$version$</version>
+		<title>Archon Web API Framework</title>
+		<authors>Archon Information Systems, LLC</authors>
+		<owners>Archon Information Systems, LLC</owners>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+		<description>Extension and helper methods that make working with Asp.Net Web API easier</description>
+		<projectUrl>https://github.com/civicsource/http</projectUrl>
+		<licenseUrl>https://github.com/civicsource/http/blob/master/LICENSE</licenseUrl>
+	</metadata>
+</package>

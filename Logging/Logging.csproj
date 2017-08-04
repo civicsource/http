@@ -59,11 +59,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\common.nuspec">
-      <Link>Properties\common.nuspec</Link>
-    </None>
     <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="Properties\Logging.nuspec" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
