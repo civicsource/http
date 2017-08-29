@@ -18,6 +18,7 @@ Make sure to add `using Archon.Http;` to the top of your files to get access to 
 * [Rewrite Accept Parameter in URL to HTTP Accept Header](#rewrite-accept-parameter-in-url-to-http-accept-header)
 * [Bind CSV Values to Routes](#bind-csv-values-to-routes)
 * [Use JSON Exception Handling](#use-json-exception-handling)
+* [Query String Builder](#query-string-builder)
 
 ### The Link Concept
 
@@ -181,3 +182,15 @@ app.UseJsonExceptionHandling();
 ```
 
 This will handle exceptions in a similar way to how Asp.Net Web API used to handle them.
+
+### Query String Builder
+
+This class allows you to easily create query strings from multiple parameters:
+
+```c#
+var qs = new QueryStringBuilder();
+qs.Append("hello", "world");
+qs.Append("goodbye", "loneliness");
+
+Console.WriteLine(qs.ToString()); // ?hello=world&goodbye=loneliness
+```
