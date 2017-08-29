@@ -27,7 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Archon.Http\Archon.Http.csproj" />
+    <ProjectReference Include="..\src\http.csproj" />
   </ItemGroup>
 
   <ItemGroup>

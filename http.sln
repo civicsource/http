@@ -1,17 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+VisualStudioVersion = 15.0.26730.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{211EDFE8-A357-49E1-875A-F7DBB367FF99}"
-	ProjectSection(SolutionItems) = preProject
-		LICENSE = LICENSE
-		README.md = README.md
-	EndProjectSection
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "http", "src\http.csproj", "{3079A6EF-6BA0-40C9-B57C-547810B6A690}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Archon.Http", "Archon.Http\Archon.Http.csproj", "{3079A6EF-6BA0-40C9-B57C-547810B6A690}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Archon.Http.Tests", "Archon.Http.Tests\Archon.Http.Tests.csproj", "{9F679E85-6092-48A4-AD0B-E39EDDCA97E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "tests", "test\tests.csproj", "{9F679E85-6092-48A4-AD0B-E39EDDCA97E4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,5 +44,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7C2D203D-E998-4975-A8FD-EC364ADB2C14}
 	EndGlobalSection
 EndGlobal
