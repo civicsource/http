@@ -19,6 +19,8 @@ Make sure to add `using Archon.Http;` to the top of your files to get access to 
 * [Bind CSV Values to Routes](#bind-csv-values-to-routes)
 * [Use JSON Exception Handling](#use-json-exception-handling)
 * [Query String Builder](#query-string-builder)
+* [Read JSON Response](#read-json-response)
+* [Send Request with JSON Content](#send-request-with-json-content)
 
 ### The Link Concept
 
@@ -193,4 +195,24 @@ qs.Append("hello", "world");
 qs.Append("goodbye", "loneliness");
 
 Console.WriteLine(qs.ToString()); // ?hello=world&goodbye=loneliness
+```
+
+### Read JSON Response
+
+This is an extension method off of `HttpContent` that makes it easy to read a JSON response:
+
+```c#
+HttpResponseMessage response = client.SendAsync(new HttpRequestMessage(HttpMethod.Get, "https://dogs.example.com/api"));
+var dogs = await response.Content.ReadJsonAsync<IEnumerable<Dog>>();
+```
+
+### Send Request with JSON Content
+
+This is another extension method that makes it easy to send requests with JSON content:
+
+```c#
+var req = new HttpRequestMessage(HttpMethod.Post, "https://dogs.example.com/api")
+	.WithJsonContent(new { name = "Fido", Age = 2 });
+
+var response = await client.SendAsync(req);
 ```
