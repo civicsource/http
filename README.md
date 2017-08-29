@@ -10,7 +10,7 @@ Install via [nuget](https://www.nuget.org/packages/Archon.Http/)
 install-package Archon.Http
 ```
 
-Make sure to add `using Archon.WebApi;` to the top of your files to get access to any of the following extension methods.
+Make sure to add `using Archon.Http;` to the top of your files to get access to any of the following extension methods.
 
 * [The Link Concept](#the-link-concept)
 * [A Better Ensure Success](#a-better-ensure-success)
