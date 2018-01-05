@@ -4,3 +4,4 @@ packages
 AssemblyVersion.cs
 *.suo
 *.user
+/.vs
