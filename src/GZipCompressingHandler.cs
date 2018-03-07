@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace Archon.Http
 {
 	/// <summary>
-	/// GZip-compresses requests to save bytes over the wire
+	/// GZip-compresses requests to save bytes over the wire.
 	/// </summary>
 	public sealed class GZipCompressingHandler : DelegatingHandler
 	{
