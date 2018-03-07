@@ -1,4 +1,4 @@
-# Archon Http Utilities
+# Archon HTTP Utilities
 
 > Extensions, middleware, and helper methods that make working with HttpClient and Asp.Net MVC easier as an API.
 
@@ -17,21 +17,27 @@ Install-Package Archon.AspNetCore
 ```
 
 If you aren't using ReSharper, make sure to add `using Archon.Http;` to the top of your files to get IntelliSense to detect the extension methods.
+___
 
-## Table of Contents
+- [Archon HTTP Utilities](#archon-http-utilities)
+	- [How to Use](#how-to-use)
+- [Client utilities (`Archon.Http`)](#client-utilities-archonhttp)
+	- [The Link Concept](#the-link-concept)
+	- [A Better Ensure Success](#a-better-ensure-success)
+	- [Query String Builder](#query-string-builder)
+	- [Read JSON Response](#read-json-response)
+	- [Send Request with JSON Content](#send-request-with-json-content)
+	- [Authorization](#authorization)
+	- [GZip Request Compression (client)](#gzip-request-compression-client)
+- [ASP.NET Core server utilities (`Archon.AspNetCore`)](#aspnet-core-server-utilities-archonaspnetcore)
+	- [Rewrite Accept Parameter in URL to HTTP Accept Header](#rewrite-accept-parameter-in-url-to-http-accept-header)
+	- [Bind CSV Values to Routes](#bind-csv-values-to-routes)
+	- [Use JSON Exception Handling](#use-json-exception-handling)
+	- [GZip Request Decompression (server)](#gzip-request-decompression-server)
 
-* [The Link Concept](#the-link-concept)
-* [A Better Ensure Success](#a-better-ensure-success)
-* [Authorization Class](#authorization)
-* [Rewrite Accept Parameter in URL to HTTP Accept Header](#rewrite-accept-parameter-in-url-to-http-accept-header)
-* [Bind CSV Values to Routes](#bind-csv-values-to-routes)
-* [Use JSON Exception Handling](#use-json-exception-handling)
-* [Query String Builder](#query-string-builder)
-* [Read JSON Response](#read-json-response)
-* [Send Request with JSON Content](#send-request-with-json-content)
-* [GZip request compression](#gzip-request-compression)
+# Client utilities (`Archon.Http`)
 
-### The Link Concept
+## The Link Concept
 
 The `Link` interface should be used to create .net HTTP API clients. It is inspired by the book _[Designing Evolvable Web APIs with ASP.NET](http://chimera.labs.oreilly.com/books/1234000001708)_. It implements a link relation. Specifically:
 
@@ -107,7 +113,7 @@ public class GetGithubRepositories : Link<IEnumerable<Repo>>
 
 Read [Chapter 9: Building the Client](http://chimera.labs.oreilly.com/books/1234000001708/ch09.html) for free online for more information on the advantages of building client libraries like this.
 
-### A Better Ensure Success
+## A Better Ensure Success
 
 The existing `EnsureSuccessStatusCode` is pretty terrible when it comes to throwing a useful exception message. It does not provide any way to access the content of the response after the exception is thrown when usually, the response content has the most useful information as to why the request failed.
 
@@ -123,7 +129,39 @@ await response.EnsureSuccess();
 //{"Message":"These are not the droids you are looking for."}
 ```
 
-### Authorization
+## Query String Builder
+
+This class allows you to easily create query strings from multiple parameters:
+
+```csharp
+var qs = new QueryStringBuilder();
+qs.Append("hello", "world");
+qs.Append("goodbye", "loneliness");
+
+Console.WriteLine(qs.ToString()); // ?hello=world&goodbye=loneliness
+```
+
+## Read JSON Response
+
+This is an extension method off of `HttpContent` that makes it easy to read a JSON response:
+
+```csharp
+HttpResponseMessage response = client.SendAsync(new HttpRequestMessage(HttpMethod.Get, "https://dogs.example.com/api"));
+var dogs = await response.Content.ReadJsonAsync<IEnumerable<Dog>>();
+```
+
+## Send Request with JSON Content
+
+This is another extension method that makes it easy to send requests with JSON content:
+
+```csharp
+var req = new HttpRequestMessage(HttpMethod.Post, "https://dogs.example.com/api")
+	.WithJsonContent(new { name = "Fido", Age = 2 });
+
+var response = await client.SendAsync(req);
+```
+
+## Authorization
 
 The `Authorization` class abstracts away parsing an authorization HTTP header. It supports `Bearer` and `Basic` authorization schemes.
 
@@ -138,8 +176,32 @@ var auth = Authorization.Bearer("my-opaque-auth-token");
 request.Headers.Authorization = auth.AsHeader();
 //creates a new AuthenticationHeaderValue with the token value
 ```
+## GZip Request Compression (client)
 
-### Rewrite Accept Parameter in URL to HTTP Accept Header
+If you need to make API calls to pass big-ish chunks of data around all at once, compressing the request payload with GZip can improve performance considerably.
+
+On the client side, you'll need to add an instance of `GZipCompressingHandler` as a delegating handler to the main `HttpClientHandler`. This will compress the request content as well as adding a `Content-Encoding: gzip` header to signify to the server that the request body is compressed.
+
+```csharp
+MailhouseApi api = MailhouseApi.Build("http://localhost:50128/",
+	() => new GZipCompressingHandler(
+			new BasicAuthenticationHandler(new HttpClientHandler(), Username, Password), // Modifies headers only
+			HttpMethod.Post, // POST and PUT typically contain payloads worth compressing,
+			HttpMethod.Put   // while other verbs do not.
+		)
+	);
+```
+
+> **Note:**  
+> If you are sending gzipped requests to an Azure App Service, then you won't be able to configure its IIS gateway to dynamically decompress the request, and you'll need to add a `GZipResourceFilter` [as described below](#gzip-request-decompression-server).
+
+> **Caution:**  
+> The `GZipCompressingHandler` must be the last handler to modify the request *content*, because downstream handlers will only see compressed content. Downstream handlers can still modify headers, however.
+
+
+# ASP.NET Core server utilities (`Archon.AspNetCore`)
+
+## Rewrite Accept Parameter in URL to HTTP Accept Header
 
 Configuring the `AcceptHeaderMiddleware` will rewrite a query string `accept` parameter to a proper `HTTP Accept` header.
 
@@ -155,7 +217,7 @@ app.UseAcceptHeaderRewriter();
 app.UseMvc();
 ```
 
-### Bind CSV Values to Routes
+## Bind CSV Values to Routes
 
 The `CsvModelBinder` is a model binder that will take a csv string passed as a query string, route parameter, or request body and turn it into an array of a given type.
 
@@ -184,7 +246,7 @@ services.AddMvc().AddMvcOptions(opts =>
 });
 ```
 
-### Use JSON Exception Handling
+## Use JSON Exception Handling
 
 If you are writing an API and want unhandled exceptions handled and returned to the client in a nice JSON way, you'll want to use this middleware. In your `Startup.Configure`:
 
@@ -194,56 +256,9 @@ app.UseJsonExceptionHandling();
 
 This will handle exceptions in a similar way to how Asp.Net Web API used to handle them.
 
-### Query String Builder
+## GZip Request Decompression (server)
 
-This class allows you to easily create query strings from multiple parameters:
-
-```csharp
-var qs = new QueryStringBuilder();
-qs.Append("hello", "world");
-qs.Append("goodbye", "loneliness");
-
-Console.WriteLine(qs.ToString()); // ?hello=world&goodbye=loneliness
-```
-
-### Read JSON Response
-
-This is an extension method off of `HttpContent` that makes it easy to read a JSON response:
-
-```csharp
-HttpResponseMessage response = client.SendAsync(new HttpRequestMessage(HttpMethod.Get, "https://dogs.example.com/api"));
-var dogs = await response.Content.ReadJsonAsync<IEnumerable<Dog>>();
-```
-
-### Send Request with JSON Content
-
-This is another extension method that makes it easy to send requests with JSON content:
-
-```csharp
-var req = new HttpRequestMessage(HttpMethod.Post, "https://dogs.example.com/api")
-	.WithJsonContent(new { name = "Fido", Age = 2 });
-
-var response = await client.SendAsync(req);
-```
-
-### GZip request compression
-
-If you need to make API calls to pass big-ish chunks of data around all at once, compressing the request payload with GZip can improve performance considerably.
-
-On the client side, you'll need to add an instance of `GZipCompressingHandler` as a delegating handler to the main `HttpClientHandler`. The `GZipCompressingHandler` must be the last handler to modify the request content, because downstream handlers will only see compressed content. Downstream handlers can still modify headers, however.
-
-```csharp
-MailhouseApi api = MailhouseApi.Build("http://localhost:50128/",
-	() => new BasicAuthenticationHandler(
-		new GZipCompressingHandler(
-			new HttpClientHandler(),
-			HttpMethod.Post,
-			HttpMethod.Put
-		),
-		"system", SystemPassword));
-```
-
-The server will require a `GZipResourceFilter` in order to decompress the request content. This is simple; simply add the filter in the Startup object's `services.AddMvc()` call:
+ASP.NET Core, on its own, won't handle compressed request content. IIS can do this, but Azure App Services don't provide configurability for the IIS gateway, so instead, the request decompression must be handled by the ASP.NET application. This is simple; just add the `GZipResourceFilter` in the Startup object's `services.AddMvc()` call:
 
 ```csharp
 public void ConfigureServices(IServiceCollection services)
@@ -257,3 +272,6 @@ public void ConfigureServices(IServiceCollection services)
 ```
 
 You can confirm this works using [Fiddler](https://www.telerik.com/download/fiddler/fiddler4) to inspect the request body.
+
+> **Caution:**  
+> The `Content-Encoding:` header supports multiple values to signify that multiple encodings were applied in a particular order, but `GZipResourceFilter` does not handle this. If `GZipResourceFilter` receives such a request, it will barf.
