@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Extensions.Primitives;
 
-namespace Archon.Http
+namespace Archon.AspNetCore
 {
 	// TODO: Separate the server and client helpers in this project so that our web clients don't need to import frickin' ASP.NET
 	

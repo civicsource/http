@@ -7,7 +7,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Archon.Http
+namespace Archon.AspNetCore
 {
 	public class CsvModelBinder : IModelBinder
 	{
@@ -25,7 +25,7 @@ namespace Archon.Http
 			if (!typeof(IEnumerable).GetTypeInfo().IsAssignableFrom(modelType.GetTypeInfo()))
 				return null;
 
-			Type elementType = modelType.GetElementType() ?? modelType.GetGenericArguments().FirstOrDefault();
+			Type elementType = modelType.GetElementType() ?? Enumerable.FirstOrDefault<Type>(modelType.GetGenericArguments());
 
 			if (elementType == null)
 				return null;

@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 
-namespace Archon.Http
+namespace Archon.AspNetCore
 {
 	public class AcceptHeaderMiddleware
 	{

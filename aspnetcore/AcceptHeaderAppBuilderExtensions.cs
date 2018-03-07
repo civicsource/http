@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Builder;
 
-namespace Archon.Http
+namespace Archon.AspNetCore
 {
 	public static class AcceptHeaderAppBuilderExtensions
 	{

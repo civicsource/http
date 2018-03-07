@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Description>Extensions, middleware, and helper methods that make working with HttpClient and Asp.Net MVC easier as an API.</Description>
+    <Description>Extensions and helper methods that make working with HttpClient easier as an API.</Description>
     <VersionPrefix>2.0.0-beta2</VersionPrefix>
     <Authors>Archon Information Systems, LLC</Authors>
     <TargetFramework>netstandard1.3</TargetFramework>
     <AssemblyName>Archon.Http</AssemblyName>
     <RootNamespace>Archon.Http</RootNamespace>
-    <PackageTags>webapi;utils;api;http;model binders;middleware;authorization</PackageTags>
+    <PackageTags>webapi;utils;api;http;authorization</PackageTags>
     <PackageProjectUrl>https://github.com/civicsource/http</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/civicsource/http/blob/master/LICENSE</PackageLicenseUrl>
     <Version>1.0.0</Version>
