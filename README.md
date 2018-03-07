@@ -21,6 +21,7 @@ Make sure to add `using Archon.Http;` to the top of your files to get access to 
 * [Query String Builder](#query-string-builder)
 * [Read JSON Response](#read-json-response)
 * [Send Request with JSON Content](#send-request-with-json-content)
+* [GZip request compression](#gzip-request-compression)
 
 ### The Link Concept
 
@@ -216,3 +217,35 @@ var req = new HttpRequestMessage(HttpMethod.Post, "https://dogs.example.com/api"
 
 var response = await client.SendAsync(req);
 ```
+
+### GZip request compression
+
+If you need to make API calls to pass big-ish chunks of data around all at once, compressing the request payload with GZip can improve performance considerably.
+
+On the client side, you'll need to add an instance of `GZipCompressingHandler` as a delegating handler to the main `HttpClientHandler`. The `GZipCompressingHandler` must be the last handler to modify the request content, because downstream handlers will only see compressed content. Downstream handlers can still modify headers, however.
+
+```csharp
+MailhouseApi api = MailhouseApi.Build("http://localhost:50128/",
+	() => new BasicAuthenticationHandler(
+		new GZipCompressingHandler(
+			new HttpClientHandler(),
+			HttpMethod.Post,
+			HttpMethod.Put
+		),
+		"system", SystemPassword));
+```
+
+The server will require a `GZipResourceFilter` in order to decompress the request content. This is simple; simply add the filter in the Startup object's `services.AddMvc()` call:
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+	// ...
+	services.AddMvc(opts => opts.Filters.Add(typeof(GZipResourceFilter)))
+		.AddJsonOptions(opts => JsonSettings.Configure(opts.SerializerSettings))
+		.AddControllersAsServices(); // etc
+	// ...
+}
+```
+
+You can confirm this works using [Fiddler](https://www.telerik.com/download/fiddler/fiddler4) to inspect the request body.
