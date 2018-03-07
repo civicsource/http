@@ -1,16 +1,24 @@
 # Archon Http Utilities
 
-> Extensions, middleware, and helper methods that make working with HttpClient and Asp.Net MVC easier as an API
+> Extensions, middleware, and helper methods that make working with HttpClient and Asp.Net MVC easier as an API.
 
 ## How to Use
 
-Install via [nuget](https://www.nuget.org/packages/Archon.Http/)
+Install via nuget, [Archon.Http](https://www.nuget.org/packages/Archon.Http/) for HTTP clients
 
-```
-install-package Archon.Http
+```powershell
+Install-Package Archon.Http
 ```
 
-Make sure to add `using Archon.Http;` to the top of your files to get access to any of the following extension methods.
+or [Archon.AspNetCore](https://www.nuget.org/packages/Archon.AspNetCore/) for ASP.NET Core MVC
+
+```powershell
+Install-Package Archon.AspNetCore
+```
+
+If you aren't using ReSharper, make sure to add `using Archon.Http;` to the top of your files to get IntelliSense to detect the extension methods.
+
+## Table of Contents
 
 * [The Link Concept](#the-link-concept)
 * [A Better Ensure Success](#a-better-ensure-success)
@@ -31,21 +39,21 @@ The `Link` interface should be used to create .net HTTP API clients. It is inspi
 
 If you were building an API client for the [Github API](https://developer.github.com/v3/), rather than providing something like this:
 
-```c#
+```csharp
 var github = new GithubClient("my-api-key");
 var repos = github.GetRepositories("username");
 ```
 
 `Link` allows you to provide an interface more akin to this:
 
-```c#
+```csharp
 var client = new HttpClient();
 var repos = await client.SendAsync(new GetGithubRepositories("username"));
 ```
 
 This uses the native `HttpClient` to do what it is good at, sending HTTP requests while at the same time providing a nice porcelain wrapper around the HTTP particulars. However, if you want to be closer to the metal, `Link` doesn't try to leakily abstract away the fact that you are making an HTTP request. You can also do something like this:
 
-```c#
+```csharp
 var client = new HttpClient();
 var link = new GetGithubRepositories("username");
 
@@ -63,7 +71,7 @@ Internally, the `HttpClient.SendAsync(Link)` method is calling `CreateRequest` a
 
 A sample implementation of `GetGithubRepositories` could look something like this:
 
-```c#
+```csharp
 public class GetGithubRepositories : Link<IEnumerable<Repo>>
 {
 	public string Username { get; private set; }
@@ -105,7 +113,7 @@ The existing `EnsureSuccessStatusCode` is pretty terrible when it comes to throw
 
 This new extension method, `EnsureSuccess`, will return the response content along with the status code and request URL/method in the exception message making your logs much more useful when making use of HTTP APIs.
 
-```c#
+```csharp
 //client is an HttpClient and request is an HttpRequestMessage
 HttpResponseMessage response = await client.SendAsync(request);
 await response.EnsureSuccess();
@@ -119,13 +127,13 @@ await response.EnsureSuccess();
 
 The `Authorization` class abstracts away parsing an authorization HTTP header. It supports `Bearer` and `Basic` authorization schemes.
 
-```c#
+```csharp
 var auth = Authorization.Basic("username", "password");
 request.Headers.Authorization = auth.AsHeader();
 //base64 encodes the username:password and creates a new AuthenticationHeaderValue
 ```
 
-```c#
+```csharp
 var auth = Authorization.Bearer("my-opaque-auth-token");
 request.Headers.Authorization = auth.AsHeader();
 //creates a new AuthenticationHeaderValue with the token value
@@ -141,7 +149,7 @@ Configuring the `AcceptHeaderMiddleware` will rewrite a query string `accept` pa
 
 To use, add `app.UseAcceptHeaderRewriter()` to your `Startup.Configure`:
 
-```c#
+```csharp
 //...register all of your other stuff...
 app.UseAcceptHeaderRewriter();
 app.UseMvc();
@@ -155,7 +163,7 @@ The `CsvModelBinder` is a model binder that will take a csv string passed as a q
 https://example.com/mystuff/1,2,3
 ```
 
-```c#
+```csharp
 [HttpGet]
 [Route("mystuff/{ids}")]
 public HttpResponseMessage DoSomethingWithIds(int[] ids /* or IEnumerable<int> ids */)
@@ -169,7 +177,7 @@ public HttpResponseMessage DoSomethingWithIds(int[] ids /* or IEnumerable<int> i
 
 Register it in `Startup.ConfigureServices`:
 
-```c#
+```csharp
 services.AddMvc().AddMvcOptions(opts =>
 {
 	opts.ModelBinders.Add(new CsvModelBinder());
@@ -180,7 +188,7 @@ services.AddMvc().AddMvcOptions(opts =>
 
 If you are writing an API and want unhandled exceptions handled and returned to the client in a nice JSON way, you'll want to use this middleware. In your `Startup.Configure`:
 
-```c#
+```csharp
 app.UseJsonExceptionHandling();
 ```
 
@@ -190,7 +198,7 @@ This will handle exceptions in a similar way to how Asp.Net Web API used to hand
 
 This class allows you to easily create query strings from multiple parameters:
 
-```c#
+```csharp
 var qs = new QueryStringBuilder();
 qs.Append("hello", "world");
 qs.Append("goodbye", "loneliness");
@@ -202,7 +210,7 @@ Console.WriteLine(qs.ToString()); // ?hello=world&goodbye=loneliness
 
 This is an extension method off of `HttpContent` that makes it easy to read a JSON response:
 
-```c#
+```csharp
 HttpResponseMessage response = client.SendAsync(new HttpRequestMessage(HttpMethod.Get, "https://dogs.example.com/api"));
 var dogs = await response.Content.ReadJsonAsync<IEnumerable<Dog>>();
 ```
@@ -211,7 +219,7 @@ var dogs = await response.Content.ReadJsonAsync<IEnumerable<Dog>>();
 
 This is another extension method that makes it easy to send requests with JSON content:
 
-```c#
+```csharp
 var req = new HttpRequestMessage(HttpMethod.Post, "https://dogs.example.com/api")
 	.WithJsonContent(new { name = "Fido", Age = 2 });
 
