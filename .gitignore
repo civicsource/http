@@ -4,5 +4,6 @@ packages
 artifacts
 project.lock.json
 .vs
+.vscode
 *.suo
 *.user
