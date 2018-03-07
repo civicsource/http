@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26730.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "http", "src\http.csproj", "{3079A6EF-6BA0-40C9-B57C-547810B6A690}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "http", "http\http.csproj", "{3079A6EF-6BA0-40C9-B57C-547810B6A690}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "tests", "test\tests.csproj", "{9F679E85-6092-48A4-AD0B-E39EDDCA97E4}"
 EndProject
