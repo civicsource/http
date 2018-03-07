@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Description>Middleware and helpers to make working with ASP.NET MVC easier.</Description>
     <Authors>Archon Information Systems, LLC</Authors>
-    <TargetFramework>netstandard1.3</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Archon.AspNetCore</AssemblyName>
     <RootNamespace>Archon.AspNetCore</RootNamespace>
     <PackageTags>utils;api;http;model binders;middleware</PackageTags>

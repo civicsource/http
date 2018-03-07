@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>    
-    <TargetFramework>netcoreapp1.1</TargetFramework>    
+    <TargetFramework>netcoreapp2.0</TargetFramework>    
     <AssemblyName>Archon.Http.Tests</AssemblyName>    
     <RootNamespace>Archon.Http.Tests</RootNamespace>    
     <PackageTags>webapi;utils;api;http;model binders;middleware;authorization</PackageTags>    
@@ -27,7 +27,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\src\http.csproj" />
+    <ProjectReference Include="..\http\http.csproj" />
+    <ProjectReference Include="..\aspnetcore\aspnetcore.csproj" />
   </ItemGroup>
 
   <ItemGroup>
