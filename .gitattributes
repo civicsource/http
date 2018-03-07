@@ -1,3 +1,9 @@
 # Auto detect text files and perform LF normalization
-* text=auto
-*.cs     diff=csharp
+*				text=auto
+
+# C# code is explicitly text, and diffs in a well-defined manner
+*.cs			text		diff=csharp
+
+# VS is militant about project files using CRLF. If they're allowed to be LF in the repository,
+# then any auto-merges will default to using LF, which will increase the number of spurious conlicts.
+*.csproj		text		diff=html	eol=crlf
