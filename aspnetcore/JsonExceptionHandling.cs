@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Newtonsoft.Json;
 
-namespace Archon.Http
+namespace Archon.AspNetCore
 {
 	public static class JsonExceptionHandling
 	{
