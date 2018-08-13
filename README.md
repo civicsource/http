@@ -30,7 +30,8 @@ ___
 	- [Authorization](#authorization)
 	- [GZip Request Compression (client)](#gzip-request-compression-client)
 - [ASP.NET Core server utilities (`Archon.AspNetCore`)](#aspnet-core-server-utilities-archonaspnetcore)
-	- [Rewrite Accept Parameter in URL to HTTP Accept Header](#rewrite-accept-parameter-in-url-to-http-accept-header)
+	- [Rewrite `accept` Parameter in URL to HTTP Accept Header](#rewrite-accept-parameter-in-url-to-http-accept-header)
+	- [Rewrite `auth` Parameter in URL to HTTP Authorization Header](#rewrite-auth-parameter-in-url-to-http-authorization-header)
 	- [Bind CSV Values to Routes](#bind-csv-values-to-routes)
 	- [Use JSON Exception Handling](#use-json-exception-handling)
 	- [GZip Request Decompression (server)](#gzip-request-decompression-server)
@@ -201,19 +202,35 @@ MailhouseApi api = MailhouseApi.Build("http://localhost:50128/",
 
 # ASP.NET Core server utilities (`Archon.AspNetCore`)
 
-## Rewrite Accept Parameter in URL to HTTP Accept Header
+## Rewrite `accept` Parameter in URL to HTTP `Accept` Header
 
-Configuring the `AcceptHeaderMiddleware` will rewrite a query string `accept` parameter to a proper `HTTP Accept` header.
+Adding the `AcceptHeaderMiddleware` will rewrite a query string `accept` parameter to a proper HTTP `Accept` header.
 
 ```html
-<a href="/api/resource/which/normally/returns/json/but/honors/accept/headers?accept=text/csv"></a>
+<a href="/api/resource/which/normally/returns/json/but/honors/accept/headers?accept=text/csv">Download as CSV</a>
 ```
 
 To use, add `app.UseAcceptHeaderRewriter()` to your `Startup.Configure`:
 
 ```csharp
-//...register all of your other stuff...
+// ...register anything else that might affect the request...
 app.UseAcceptHeaderRewriter();
+app.UseMvc();
+```
+
+## Rewrite `auth` Parameter in URL to HTTP `Authorization` Header
+
+Adding the `AuthHeaderMiddleware` will rewrite a query string `auth` parameter to a proper HTTP `Authorization` header.
+
+```html
+<a href="/api/resource/which/requires/sso/auth/on/a/different/domain?auth=SomeBase64String">Fetch authenticated resource</a>
+```
+
+To use, add `app.UseAuthHeaderRewriter()` to your `Startup.Configure`:
+
+```csharp
+app.UseAuthHeaderRewriter();
+// ...register anything else that might affect the request...
 app.UseMvc();
 ```
 
@@ -248,13 +265,14 @@ services.AddMvc().AddMvcOptions(opts =>
 
 ## Use JSON Exception Handling
 
-If you are writing an API and want unhandled exceptions handled and returned to the client in a nice JSON way, you'll want to use this middleware. In your `Startup.Configure`:
+If you are writing an API and want unhandled exceptions handled and returned to the client in a nice JSON way, you'll want to use this middleware. In your `Startup.Configure`, call this before everything else, so that it gets first-dibs at answering when an exception goes unhandled:
 
 ```csharp
 app.UseJsonExceptionHandling();
+// ...literally everything else...
 ```
 
-This will handle exceptions in a similar way to how Asp.Net Web API used to handle them.
+This will handle exceptions in a similar way to how ASP.NET Web API used to handle them.
 
 ## GZip Request Decompression (server)
 
