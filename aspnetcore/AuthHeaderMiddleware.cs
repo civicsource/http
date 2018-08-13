@@ -5,6 +5,10 @@ using Microsoft.Extensions.Primitives;
 
 namespace Archon.AspNetCore
 {
+	/// <summary>
+	/// When no <c>Authorization</c> header is provided in a request, this middleware captures the first
+	/// query string parameter keyed by <c>auth</c>, and adds the parameter's value as a <c>Bearer</c> token.
+	/// </summary>
 	public class AuthHeaderMiddleware
 	{
 		private readonly RequestDelegate next;
@@ -26,7 +30,7 @@ namespace Archon.AspNetCore
 			if (request.Headers["Authorization"].Any())
 				return;
 
-			string authQueryValue = request.Query["auth"].FirstOrDefault();
+			string authQueryValue = request.Query["auth"];
 
 			if (!string.IsNullOrEmpty(authQueryValue))
 			{

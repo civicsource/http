@@ -4,6 +4,10 @@ using Microsoft.AspNetCore.Http;
 
 namespace Archon.AspNetCore
 {
+	/// <summary>
+	/// When a query string parameter keyed by <c>accept</c> is provided in a request, this middleware
+	/// overrides the HTTP <c>Accept</c> header with the value of the first matching parameter.
+	/// </summary>
 	public class AcceptHeaderMiddleware
 	{
 		readonly RequestDelegate next;
