@@ -5,8 +5,6 @@ using Microsoft.Extensions.Primitives;
 
 namespace Archon.AspNetCore
 {
-	// TODO: Separate the server and client helpers in this project so that our web clients don't need to import frickin' ASP.NET
-	
 	/// <summary>
 	/// A filter that decompresses GZip content from HTTP requests specified as <c>Content-Encoding: gzip</c>
 	/// </summary>
