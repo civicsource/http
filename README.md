@@ -4,13 +4,13 @@
 
 ## How to Use
 
-Install via nuget, [Archon.Http](https://www.nuget.org/packages/Archon.Http/) for HTTP clients
+Install via nuget; [Archon.Http](https://www.nuget.org/packages/Archon.Http/) for HTTP clients,
 
 ```powershell
 Install-Package Archon.Http
 ```
 
-or [Archon.AspNetCore](https://www.nuget.org/packages/Archon.AspNetCore/) for ASP.NET Core MVC
+or [Archon.AspNetCore](https://www.nuget.org/packages/Archon.AspNetCore/) for ASP.NET Core MVC.
 
 ```powershell
 Install-Package Archon.AspNetCore
