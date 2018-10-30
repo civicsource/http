@@ -107,5 +107,57 @@ namespace Archon.Http.Tests
 
 			Assert.Equal(expected, qs.ToString());
 		}
+
+		[Fact]
+		public void can_build_query_string_from_object_template()
+		{
+			var qs = new QueryStringBuilder(new
+			{
+				name = "homer",
+				age = 42
+			});
+
+			Assert.Equal("?name=homer&age=42", qs.ToString());
+		}
+
+		[Fact]
+		public void can_build_query_string_from_object_template_with_null_values()
+		{
+			var qs = new QueryStringBuilder(new
+			{
+				name = "homer",
+				state = (string)null
+			});
+
+			Assert.Equal("?name=homer", qs.ToString());
+		}
+
+		[Fact]
+		public void can_build_query_string_from_object_template_with_boolean_values()
+		{
+			var qs = new QueryStringBuilder(new
+			{
+				name = "homer",
+				isPerson = true,
+				isCat = false,
+				foo = (bool?)true,
+				bar = (bool?)null
+			});
+
+			Assert.Equal("?name=homer&isPerson=true&isCat=false&foo=true", qs.ToString());
+		}
+
+		[Fact]
+		public void can_build_query_string_from_object_template_with_collections()
+		{
+			var qs = new QueryStringBuilder(new
+			{
+				name = "Homer",
+				kids = new string[] { "Bart", "Lisa", "Maggie" },
+				ages = new int[] { 42 }
+			});
+
+			Assert.Equal("?name=Homer&kids=Bart&kids=Lisa&kids=Maggie&ages=42", qs.ToString());
+		}
 	}
 }

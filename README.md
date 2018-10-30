@@ -165,6 +165,18 @@ qs.Remove("hello");
 Console.WriteLine(qs.ToString()); // https://example.com
 ```
 
+You can also create a `QueryStringBuilder` from an object template:
+
+```csharp
+var qs = new QueryStringBuilder(new
+{
+	name = "Homer",
+	kids = new string[] { "Bart", "Lisa", "Maggie" }
+});
+
+Console.WriteLine(qs.ToString()); // ?name=Homer&kids=Bart&kids=Lisa&kids=Maggie
+```
+
 ## Read JSON Response
 
 This is an extension method off of `HttpContent` that makes it easy to read a JSON response:

@@ -1,12 +1,17 @@
 using System;
+using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace Archon.Http
 {
 	public class QueryStringBuilder
 	{
+		static readonly ConcurrentDictionary<Type, IEnumerable<PropertyInfo>> propsByType = new ConcurrentDictionary<Type, IEnumerable<PropertyInfo>>();
+
 		readonly string baseUri;
 		readonly Dictionary<string, List<string>> parameters = new Dictionary<string, List<string>>();
 
@@ -18,6 +23,47 @@ namespace Archon.Http
 		public QueryStringBuilder(string baseUri)
 		{
 			this.baseUri = ParseQueryString(baseUri);
+		}
+
+		public QueryStringBuilder(object uriTemplate)
+			: this(null)
+		{
+			if (uriTemplate == null)
+				throw new ArgumentNullException(nameof(uriTemplate));
+
+			var props = propsByType.GetOrAdd(uriTemplate.GetType(), t => t.GetProperties());
+
+			foreach (var prop in props)
+			{
+				object value = prop.GetValue(uriTemplate);
+
+				if (value is string strval)
+				{
+					if (!String.IsNullOrWhiteSpace(strval))
+					{
+						Append(prop.Name, strval);
+					}
+				}
+				else if (value is bool bval)
+				{
+					Append(prop.Name, bval ? "true" : "false");
+				}
+				else if (value is IEnumerable values)
+				{
+					foreach (object subvalue in values)
+					{
+						Append(prop.Name, subvalue?.ToString());
+					}
+				}
+				else
+				{
+					string ostrval = value?.ToString();
+					if (!String.IsNullOrWhiteSpace(ostrval))
+					{
+						Append(prop.Name, ostrval);
+					}
+				}
+			}
 		}
 
 		string ParseQueryString(string uri)
