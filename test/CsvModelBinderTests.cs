@@ -77,7 +77,7 @@ namespace Archon.Http.Tests
 			var items = binder.BindModel(typeof(IEnumerable<Guid>), $"this-is-not-a-valid-guid,{guid1},neither is this") as IEnumerable<Guid>;
 
 			Assert.NotNull(items);
-			Assert.Equal(1, items.Count());
+			Assert.Single(items);
 			Assert.Contains(guid1, items);
 		}
 
@@ -111,7 +111,7 @@ namespace Archon.Http.Tests
 			var items = binder.BindModel(typeof(IEnumerable<int>), "this-is-not-a-valid-int,13,neither is this") as IEnumerable<int>;
 
 			Assert.NotNull(items);
-			Assert.Equal(1, items.Count());
+			Assert.Single(items);
 			Assert.Contains(13, items);
 		}
 
@@ -132,7 +132,7 @@ namespace Archon.Http.Tests
 			var items = binder.BindModel(typeof(IEnumerable<string>), " homer.simpson  ") as IEnumerable<string>;
 
 			Assert.NotNull(items);
-			Assert.Equal(1, items.Count());
+			Assert.Single(items);
 			Assert.Equal("homer.simpson", items.Single());
 		}
 

@@ -1,10 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <Description>Extensions and helper methods that make working with HttpClient easier as an API.</Description>
     <VersionPrefix>2.0.0-beta2</VersionPrefix>
     <Authors>Archon Information Systems, LLC</Authors>
-    <TargetFrameworks>netstandard2.0;netstandard1.3</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <AssemblyName>Archon.Http</AssemblyName>
     <RootNamespace>Archon.Http</RootNamespace>
     <PackageTags>webapi;utils;api;http;authorization</PackageTags>
@@ -22,12 +21,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
-    <PackageReference Include="System.Collections.Immutable" Version="1.4.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="System.Collections.Immutable" Version="1.5.0" />
   </ItemGroup>
-	
-	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard1.3'">
-		<PackageReference Include="System.Security.Claims" Version="4.3.0" />
-	</ItemGroup>
-
 </Project>

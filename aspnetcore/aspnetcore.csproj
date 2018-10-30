@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <Description>Middleware and helpers to make working with ASP.NET MVC easier.</Description>
     <Authors>Archon Information Systems, LLC</Authors>
@@ -21,9 +20,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
-	  <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="1.1.2" />
-	  <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="1.1.2" />
-	  <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="1.1.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.1.3" />
   </ItemGroup>
 </Project>
