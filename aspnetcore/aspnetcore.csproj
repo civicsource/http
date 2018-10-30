@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Description>Middleware and helpers to make working with ASP.NET MVC easier.</Description>
     <Authors>Archon Information Systems, LLC</Authors>

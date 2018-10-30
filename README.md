@@ -132,14 +132,37 @@ await response.EnsureSuccess();
 
 ## Query String Builder
 
-This class allows you to easily create query strings from multiple parameters:
+This class allows you to easily create query strings from multiple parameters using `Set`, `Append`, & `Remove`:
 
 ```csharp
 var qs = new QueryStringBuilder();
-qs.Append("hello", "world");
-qs.Append("goodbye", "loneliness");
+qs.Set("hello", "world");
+qs.Set("goodbye", "loneliness");
 
 Console.WriteLine(qs.ToString()); // ?hello=world&goodbye=loneliness
+
+qs = new QueryStringBuilder();
+qs.Set("hello", "world");
+qs.Set("hello", "universe");
+
+Console.WriteLine(qs.ToString()); // ?hello=universe
+
+qs = new QueryStringBuilder();
+qs.Append("hello", "world");
+qs.Append("hello", "universe");
+
+Console.WriteLine(qs.ToString()); // ?hello=world&hello=universe
+
+qs = new QueryStringBuilder("https://example.com/?hello=world&homer=simpson");
+qs.Set("age", "42");
+qs.Set("hello", "universe");
+
+Console.WriteLine(qs.ToString()); // https://example.com?homer=simpson&age=42&hello=universe
+
+qs = new QueryStringBuilder("https://example.com/?hello=world");
+qs.Remove("hello");
+
+Console.WriteLine(qs.ToString()); // https://example.com
 ```
 
 ## Read JSON Response
