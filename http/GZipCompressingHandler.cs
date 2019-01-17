@@ -30,7 +30,7 @@ namespace Archon.Http
 		protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
 			CancellationToken cancellationToken)
 		{
-			if (verbs.Contains(request.Method))
+			if (verbs.Contains(request.Method) && request.Content != null)
 				request.Content = new GZipHttpContent(request.Content);
 
 			return base.SendAsync(request, cancellationToken);
