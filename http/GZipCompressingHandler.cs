@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Immutable;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
@@ -14,7 +14,7 @@ namespace Archon.Http
 	/// </summary>
 	public sealed class GZipCompressingHandler : DelegatingHandler
 	{
-		private readonly ImmutableHashSet<HttpMethod> verbs;
+		private readonly HashSet<HttpMethod> verbs;
 
 		/// <inheritdoc cref="DelegatingHandler"/>
 		/// <param name="verbsToCompress">A list of HTTP verbs to compress. Generally, only <see cref="HttpMethod.Post"/> and <see cref="HttpMethod.Put"/> are particularly useful.</param>
@@ -24,7 +24,7 @@ namespace Archon.Http
 			if (verbsToCompress.Length == 0)
 				throw new ArgumentException("Must specify at least one HTTP verb to compress", nameof(verbsToCompress));
 
-			verbs = verbsToCompress.ToImmutableHashSet();
+			verbs = new HashSet<HttpMethod>(verbsToCompress);
 		}
 
 		protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
